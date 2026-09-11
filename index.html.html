@@ -1,0 +1,1688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101828">
+<title>My Finance OS — God Mode Animated</title>
+<style>
+:root{--bg:#f4f7fb;--surface:#fff;--surface2:#f8fafc;--text:#101828;--muted:#667085;--line:#e4e7ec;--accent:#155eef;--accent2:#7f56d9;--income:#039855;--expense:#d92d20;--warning:#dc6803;--shadow:0 12px 35px rgba(16,24,40,.07);--control:#eef2f6;--controlText:#344054;--input:#fff;--inputText:#101828}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body::before{content:"";position:fixed;inset:-30%;z-index:-1;background:radial-gradient(circle at 20% 20%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 28%),radial-gradient(circle at 80% 10%,color-mix(in srgb,var(--accent2) 10%,transparent),transparent 25%);animation:float 14s ease-in-out infinite alternate}
+@keyframes float{to{transform:translate3d(2%,2%,0) scale(1.04)}}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes pulse{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 0%,transparent)}}.app{max-width:1260px;margin:auto;padding-bottom:90px}
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:14px 18px}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand h1{margin:0;font-size:22px}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+nav{display:flex;gap:7px;overflow:auto;margin-top:12px}nav button,.btn{border:0;border-radius:12px;background:var(--control);color:var(--controlText);padding:10px 13px;white-space:nowrap}nav button.active,.btn.primary{background:var(--accent);color:white;box-shadow:0 7px 18px color-mix(in srgb,var(--accent) 25%,transparent)}nav button{transition:.2s}nav button:hover,.btn:hover{transform:translateY(-1px)}
+main{padding:18px}.page{display:none}.page.active{display:block;animation:rise .35s ease both}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.actions{display:flex;gap:8px;flex-wrap:wrap}h2{margin:0 0 5px}h3{margin:0 0 10px}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);animation:rise .45s ease both}.metric strong{display:block;font-size:25px;margin-top:4px}.metric small,.kicker{color:var(--muted)}.kicker{text-transform:uppercase;font-size:10px;letter-spacing:.08em;font-weight:750}.big{font-size:30px;font-weight:800}
+.income{color:var(--income)}.expense{color:var(--expense)}.accent{color:var(--accent)}.purple{color:var(--accent2)}.warning{color:var(--warning)}
+.section{margin-top:20px}.bar{height:9px;background:var(--surface2);border:1px solid var(--line);border-radius:99px;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:900px}.table th,.table td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.table th{color:var(--muted);font-size:12px}
+.pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:var(--control);color:var(--controlText);font-size:11px}.pill.in{background:color-mix(in srgb,var(--income) 12%,var(--surface));color:var(--income)}.pill.out{background:color-mix(in srgb,var(--expense) 12%,var(--surface));color:var(--expense)}.pill.transfer{background:color-mix(in srgb,var(--accent) 12%,var(--surface));color:var(--accent)}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:10px;background:var(--input);color:var(--inputText);outline:none}.field textarea{min-height:75px}.field input::placeholder{color:var(--muted)}.full{grid-column:1/-1}
+.chart{display:flex;align-items:center;justify-content:center;gap:24px;min-height:230px}.donut{width:165px;height:165px;border-radius:50%;background:conic-gradient(var(--accent) 0 45%,var(--accent2) 45% 68%,var(--income) 68% 86%,var(--warning) 86% 100%);position:relative;animation:spinIn .9s ease both}.donut:after{content:"";position:absolute;inset:36px;background:var(--surface);border-radius:50%}@keyframes spinIn{from{transform:rotate(-90deg) scale(.75);opacity:0}to{transform:none;opacity:1}}.legend div{margin:8px 0}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+.account{position:relative;overflow:hidden}.account::after{content:"";position:absolute;width:100px;height:100px;right:-35px;top:-35px;border-radius:50%;background:color-mix(in srgb,var(--accent) 8%,transparent)}.account-balance{font-size:25px;font-weight:800;margin:12px 0 2px}
+.alert,.success{padding:12px;border-radius:13px;margin-top:10px}.alert{background:color-mix(in srgb,var(--warning) 13%,var(--surface));color:#b54708}.success{background:color-mix(in srgb,var(--income) 13%,var(--surface));color:var(--income)}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.theme{padding:14px;border:2px solid var(--line);border-radius:14px;background:var(--surface);color:var(--text);font-weight:650}.theme.selected{border-color:var(--accent);background:var(--surface2)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:50;align-items:flex-end;justify-content:center}.modal.open{display:flex}.modalbox{background:var(--surface);width:min(760px,100%);max-height:94vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px}.drop{border:2px dashed var(--line);border-radius:18px;padding:28px;text-align:center;background:var(--surface2);transition:.2s}.drop.drag{border-color:var(--accent);transform:scale(1.01)}.toast{display:none;position:fixed;z-index:70;bottom:20px;left:50%;transform:translateX(-50%);background:#101828;color:white;border-radius:12px;padding:11px 16px;box-shadow:var(--shadow)}
+@media(min-width:900px){.modal{align-items:center}.modalbox{border-radius:24px}}@media(max-width:850px){.grid,.grid3{grid-template-columns:1fr 1fr}.theme-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){main{padding:13px}.grid,.grid3{grid-template-columns:1fr 1fr}.form{grid-template-columns:1fr}.full{grid-column:auto}.chart{flex-direction:column}.legend{margin-bottom:15px}.big{font-size:25px}}
+
+/* SOLARPUNK V2 OVERRIDES */
+:root{
+  --bg:#f3f7ec;--surface:#fbfff6;--surface2:#edf5df;--text:#183426;--muted:#647568;
+  --line:#cbd9c2;--accent:#2f7d46;--accent2:#d99b32;--income:#23834d;--expense:#c24b3d;
+  --warning:#b56a1e;--control:#e6f0dd;--controlText:#244332;--input:#fbfff7;--inputText:#183426;
+  --glow:rgba(78,145,77,.20)
+}
+body{background:
+ radial-gradient(circle at 12% 10%,rgba(241,188,67,.20),transparent 20%),
+ radial-gradient(circle at 88% 20%,rgba(61,145,88,.16),transparent 24%),
+ linear-gradient(180deg,#eef5e7 0%,#f8fbf3 46%,#edf4e5 100%);overflow-x:hidden}
+body::after{content:"";position:fixed;inset:auto -10% -20% -10%;height:35vh;z-index:-2;
+ background:radial-gradient(ellipse at 50% 100%,rgba(66,133,78,.16),transparent 62%);pointer-events:none}
+header{background:rgba(248,252,242,.82);border-bottom:1px solid rgba(87,117,78,.25)}
+.brand h1{letter-spacing:-.03em}
+.brand h1::first-letter{filter:drop-shadow(0 0 7px rgba(217,155,50,.45))}
+nav button{background:rgba(226,238,217,.82);border:1px solid rgba(77,115,77,.12)}
+nav button.active,.btn.primary{background:linear-gradient(135deg,#2f7d46,#4c9b5b);box-shadow:0 8px 24px rgba(47,125,70,.22)}
+.card{border:1px solid rgba(105,132,98,.25);box-shadow:0 16px 38px rgba(45,83,51,.08),inset 0 1px 0 rgba(255,255,255,.55)}
+.card:hover{transform:translateY(-2px);box-shadow:0 20px 45px rgba(45,83,51,.12);transition:.25s}
+.metric strong{letter-spacing:-.04em}
+.account::before{content:"";position:absolute;left:-20px;top:-25px;width:120px;height:120px;border-radius:50%;
+ background:radial-gradient(circle,rgba(217,155,50,.16),transparent 68%);animation:sunPulse 5s ease-in-out infinite}
+@keyframes sunPulse{50%{transform:scale(1.18);opacity:.65}}
+.bar{background:#e4ecdc}.bar span{background:linear-gradient(90deg,#4e9b5d,#d7a13b)}
+.donut{background:conic-gradient(#4e9b5d 0 45%,#d7a13b 45% 68%,#6fa85d 68% 86%,#d06a4e 86% 100%);box-shadow:0 0 0 10px rgba(78,155,93,.06),0 18px 35px rgba(47,125,70,.16)}
+.theme{background:var(--surface);color:var(--text)}
+/* animated landscape */
+#ecoScene{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.sun{position:absolute;width:130px;height:130px;border-radius:50%;right:7%;top:80px;
+ background:radial-gradient(circle,#ffd56a 0 38%,rgba(255,213,106,.3) 58%,transparent 72%);
+ filter:blur(.2px);animation:sunFloat 8s ease-in-out infinite}
+@keyframes sunFloat{50%{transform:translateY(10px) scale(1.04);filter:drop-shadow(0 0 28px rgba(255,201,77,.45))}}
+.hill{position:absolute;bottom:-7%;width:75%;height:22%;border-radius:50% 50% 0 0/100% 100% 0 0;background:#cfe1b9;opacity:.65}
+.hill.h1{left:-18%;transform:rotate(-3deg)}.hill.h2{right:-15%;background:#b8d29f;transform:rotate(4deg)}
+.leaf{position:absolute;width:12px;height:26px;border-radius:100% 0 100% 0;background:#5b9b5b;opacity:.3;animation:leaf 12s linear infinite}
+@keyframes leaf{from{transform:translate3d(-5vw,20vh,0) rotate(0)}to{transform:translate3d(110vw,-20vh,0) rotate(720deg)}}
+.rail{position:fixed;left:0;right:0;bottom:0;height:18px;background:linear-gradient(90deg,transparent,#78956c 15%,#78956c 85%,transparent);opacity:.16;z-index:-1}
+/* solar hero */
+.hero{position:relative;overflow:hidden;border-radius:28px;padding:25px;background:linear-gradient(135deg,rgba(251,255,246,.96),rgba(231,244,218,.88));border:1px solid #c6d9b9;box-shadow:0 20px 55px rgba(48,93,54,.10)}
+.hero::after{content:"";position:absolute;right:-40px;bottom:-55px;width:230px;height:230px;border-radius:50%;border:2px dashed rgba(47,125,70,.16);animation:orbit 20s linear infinite}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.signal{display:inline-flex;gap:7px;align-items:center;padding:6px 10px;border-radius:999px;background:#e3f1d9;color:#2e6e3e;font-size:11px;font-weight:800}
+.signal i{width:8px;height:8px;border-radius:50%;background:#4ea35c;box-shadow:0 0 0 5px rgba(78,163,92,.12);animation:blink 1.8s infinite}
+@keyframes blink{50%{opacity:.35}}
+.energy-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px}
+.eco-meter{position:relative;height:155px;border-radius:20px;background:linear-gradient(180deg,#e9f3dd,#dcebcf);overflow:hidden;border:1px solid #c9ddbd}
+.eco-meter .sunMini{position:absolute;right:24px;top:18px;width:54px;height:54px;border-radius:50%;background:#f4c95d;box-shadow:0 0 28px rgba(244,201,93,.55);animation:sunFloat 6s infinite}
+.sprout{position:absolute;bottom:10px;left:12%;width:70px;height:90px}.stem{position:absolute;left:34px;bottom:0;width:5px;height:75px;background:#4f8f52;border-radius:9px}.leafA,.leafB{position:absolute;width:34px;height:20px;background:#62a45e;border-radius:100% 0 100% 0}.leafA{left:4px;bottom:42px;transform:rotate(-25deg)}.leafB{left:35px;bottom:55px;transform:scaleX(-1) rotate(-25deg)}
+.floating-action{position:fixed;right:22px;bottom:22px;width:58px;height:58px;border-radius:50%;border:0;background:#2f7d46;color:#fff;font-size:23px;box-shadow:0 12px 30px rgba(47,125,70,.3);z-index:25;animation:floatBtn 3s ease-in-out infinite}
+@keyframes floatBtn{50%{transform:translateY(-5px)}}
+@media(max-width:850px){.energy-grid{grid-template-columns:1fr 1fr}.hero{padding:19px}}@media(max-width:560px){.energy-grid{grid-template-columns:1fr}}
+
+/* SOLAR FUSION THEME ENGINE */
+html,body,.card,.hero,header,nav button,.btn,.themeCard,.field input,.field select,.field textarea,.modalbox{
+ transition:color .35s ease,background-color .35s ease,border-color .35s ease,box-shadow .35s ease,fill .35s ease
+}
+body.motionOff *,body.motionOff *::before,body.motionOff *::after{animation:none!important;transition:none!important}
+body[data-theme="minimal"]{--bg:#f7f7f5;--surface:#fff;--surface2:#f2f2ef;--text:#191919;--muted:#686868;--line:#deded9;--accent:#2b5fd9;--accent2:#2b5fd9;--control:#f0f0ed;--controlText:#292929;--input:#fff;--inputText:#191919}
+body[data-theme="night"]{--bg:#121212;--surface:#1b1b1b;--surface2:#222;--text:#f1f1ed;--muted:#aaa9a2;--line:#373737;--accent:#8ab4f8;--accent2:#a99cf7;--control:#262626;--controlText:#ededeb;--input:#1d1d1d;--inputText:#f1f1ed}
+body[data-theme="morning"]{--bg:#faf8f1;--surface:#fffdf8;--surface2:#f5f0e5;--text:#26352b;--muted:#738073;--line:#ded9cb;--accent:#2d6a4f;--accent2:#c58b36;--control:#eee9dd;--controlText:#334238;--input:#fffdf9;--inputText:#26352b}
+body[data-theme="solarpunk"]{--bg:#f3f7ec;--surface:#fbfff6;--surface2:#edf5df;--text:#183426;--muted:#647568;--line:#cbd9c2;--accent:#2f7d46;--accent2:#d99b32;--control:#e6f0dd;--controlText:#244332;--input:#fbfff7;--inputText:#183426}
+body[data-theme="lakshmi"]{--bg:#fff8ed;--surface:#fffdf8;--surface2:#fff1d8;--text:#4b2819;--muted:#806d60;--line:#ead6bc;--accent:#9b5c18;--accent2:#b83b62;--control:#faead1;--controlText:#57341e;--input:#fffdf9;--inputText:#4b2819}
+body[data-theme="spring"]{--bg:#f7fbf6;--surface:#fff;--surface2:#f1f8f0;--text:#294034;--muted:#718074;--line:#d6e5d7;--accent:#4b8b65;--accent2:#d67f9b;--control:#edf5ee;--controlText:#35513e;--input:#fff;--inputText:#294034}
+body[data-theme="cyberpunk"]{--bg:#070b12;--surface:#0d1320;--surface2:#111a2a;--text:#e8f7ff;--muted:#7e9aad;--line:#20354a;--accent:#00f5d4;--accent2:#ff2bd6;--income:#00f5d4;--expense:#ff4d6d;--warning:#ffe66d;--control:#132238;--controlText:#dffcff;--input:#0b1421;--inputText:#e8f7ff}
+body[data-theme="cyberpunk"]{background:radial-gradient(circle at 80% 10%,rgba(0,245,212,.14),transparent 24%),radial-gradient(circle at 10% 70%,rgba(255,43,214,.11),transparent 28%),#070b12}
+body[data-theme="cyberpunk"]::before{background:linear-gradient(90deg,rgba(0,245,212,.04) 1px,transparent 1px),linear-gradient(rgba(255,43,214,.035) 1px,transparent 1px);background-size:34px 34px;animation:none}
+body[data-theme="cyberpunk"] header{background:rgba(7,11,18,.84);border-color:#1d3d51}
+body[data-theme="cyberpunk"] .card{box-shadow:0 0 0 1px rgba(0,245,212,.06),0 18px 50px rgba(0,0,0,.28)}
+body[data-theme="cyberpunk"] nav button.active,body[data-theme="cyberpunk"] .btn.primary{background:linear-gradient(90deg,#00cdb4,#8a2be2);box-shadow:0 0 24px rgba(0,245,212,.18)}
+body[data-theme="cyberpunk"] #ambientLayer .ambientSun{display:none}
+body[data-theme="cyberpunk"] #ambientLayer:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.018) 4px);opacity:.35}
+body[data-theme="cyberpunk"] #lakshmiStage{width:290px;height:330px}
+body[data-theme="cyberpunk"] #lakshmiStage .lakshmiAura{background:radial-gradient(circle,rgba(0,245,212,.28),rgba(255,43,214,.15) 42%,transparent 70%);filter:blur(10px)}
+body[data-theme="cyberpunk"] #lakshmiStage .lakshmiCaption{background:#0d1320;color:#a8fff4;border-color:#00f5d4;box-shadow:0 0 20px rgba(0,245,212,.18)}
+body[data-theme="cyberpunk"] #lakshmiStage .lakshmiMascot{filter:saturate(1.45) hue-rotate(10deg) drop-shadow(0 0 20px rgba(0,245,212,.32)) drop-shadow(0 0 28px rgba(255,43,214,.2))}
+body[data-theme="cyberpunk"] #lakshmiStage .lakshmiPetals{color:#00f5d4;text-shadow:0 0 10px #00f5d4}
+body[data-theme="lakshmi"].lakshmiAnime #lakshmiStage .lakshmiMascot{filter:saturate(1.25) drop-shadow(0 0 20px rgba(184,59,98,.25))}
+body[data-theme="lakshmi"].lakshmiAnime #lakshmiStage .animeHalo{display:block}
+body:not([data-theme="lakshmi"]) #lakshmiStage .animeHalo{display:none}
+body[data-theme="minimal"]::before{display:none}
+body[data-theme="spring"]::before{background:radial-gradient(circle at 15% 15%,rgba(214,127,155,.12),transparent 20%),radial-gradient(circle at 80% 25%,rgba(112,176,139,.12),transparent 24%)}
+body[data-theme="lakshmi"]::before{background:radial-gradient(circle at 80% 10%,rgba(239,178,72,.22),transparent 24%),radial-gradient(circle at 15% 30%,rgba(184,59,98,.08),transparent 24%)}
+.themeGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.themeCard{position:relative;min-height:115px;border:1px solid var(--line);border-radius:18px;padding:14px;text-align:left;background:var(--surface);color:var(--text);overflow:hidden;cursor:pointer}
+.themeCard strong{display:block;font-size:15px}.themeCard small{display:block;color:var(--muted);margin-top:5px}
+.themeCard.selected{outline:2px solid var(--accent);box-shadow:0 10px 28px rgba(0,0,0,.08)}
+.swatches{display:flex;gap:5px;margin-top:12px}.swatches i{width:22px;height:7px;border-radius:99px;display:block}
+.autoBadge{display:inline-flex;gap:6px;align-items:center;padding:5px 8px;border-radius:99px;background:var(--control);color:var(--controlText);font-size:10px;font-weight:800}
+.newsList{display:grid;gap:8px;margin-top:12px}.newsItem{padding:11px 0;border-bottom:1px solid var(--line)}.newsItem b{display:block}.newsItem small{display:block;color:var(--muted);margin-top:3px}
+#marketPulse .grid3{margin-top:12px}
+@media(max-width:700px){.themeGrid{grid-template-columns:1fr 1fr}}
+
+#ambientLayer{position:fixed;inset:0;z-index:-3;pointer-events:none;overflow:hidden}
+.ambientSun{position:absolute;width:150px;height:150px;right:7%;top:70px;border-radius:50%;background:radial-gradient(circle,#ffd56a 0 34%,rgba(255,213,106,.22) 58%,transparent 72%);animation:ambientSun 9s ease-in-out infinite}
+.ambientGlow{position:absolute;left:-15%;bottom:-18%;width:65%;height:45%;border-radius:50%;background:radial-gradient(ellipse,rgba(68,139,78,.14),transparent 65%)}
+.ambientLeaf{position:absolute;width:13px;height:28px;border-radius:100% 0 100% 0;background:#5a9c61;opacity:.22;animation:leafDrift 14s linear infinite}
+.ambientLeaf.l1{left:4%;top:62%;animation-delay:-3s}.ambientLeaf.l2{left:55%;top:70%;animation-delay:-9s}.ambientLeaf.l3{left:86%;top:42%;animation-delay:-6s}
+.ambientPetal{display:none;position:absolute;width:9px;height:13px;border-radius:100% 0 100% 0;background:#d67f9b;opacity:.35;animation:petalDrift 11s linear infinite}
+body[data-theme="spring"] .ambientPetal{display:block}.p1{left:18%;top:10%;animation-delay:-2s}.p2{left:55%;top:2%;animation-delay:-7s}.p3{left:82%;top:24%;animation-delay:-5s}
+@keyframes ambientSun{50%{transform:translateY(12px) scale(1.04);filter:drop-shadow(0 0 26px rgba(255,201,77,.42))}}
+@keyframes leafDrift{from{transform:translate3d(-5vw,20vh,0) rotate(0)}to{transform:translate3d(110vw,-20vh,0) rotate(720deg)}}
+@keyframes petalDrift{from{transform:translate3d(-5vw,0,0) rotate(0)}to{transform:translate3d(110vw,90vh,0) rotate(540deg)}}
+#lakshmiStage{position:fixed;right:20px;bottom:20px;width:230px;height:280px;z-index:40;pointer-events:none;opacity:0;transform:translate3d(240px,40px,0) scale(.8)}
+#lakshmiStage.show{animation:lakshmiEnter 3.9s cubic-bezier(.2,.8,.2,1) forwards}
+.lakshmiMascot{position:absolute;right:0;bottom:35px;width:190px;filter:drop-shadow(0 18px 28px rgba(120,74,22,.18));animation:lakshmiFloat 2.2s ease-in-out infinite}
+.lakshmiAura{position:absolute;right:20px;bottom:50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,216,121,.55),transparent 68%);filter:blur(5px);animation:auraPulse 1.8s infinite}
+.lakshmiPetals{position:absolute;right:50px;bottom:190px;color:#d99b32;font-size:23px;letter-spacing:12px;animation:petalPop 1.6s ease-out infinite}
+.lakshmiCaption{position:absolute;right:0;bottom:0;background:rgba(255,253,248,.92);border:1px solid #ead6bc;border-radius:999px;padding:7px 11px;color:#7a4a20;font-size:11px;font-weight:750;box-shadow:0 8px 24px rgba(80,45,20,.12)}
+@keyframes lakshmiEnter{0%{opacity:0;transform:translate3d(240px,40px,0) scale(.8)}18%{opacity:1;transform:translate3d(0,0,0) scale(1)}74%{opacity:1;transform:translate3d(0,-6px,0) scale(1.02)}100%{opacity:0;transform:translate3d(260px,20px,0) scale(.82)}}
+@keyframes lakshmiFloat{50%{transform:translateY(-6px)}}@keyframes auraPulse{50%{transform:scale(1.08);opacity:.72}}@keyframes petalPop{50%{transform:translateY(-10px) scale(1.15);opacity:.7}}
+body.lakshmiAnime .lakshmiMascot{filter:saturate(1.18) drop-shadow(0 18px 30px rgba(115,54,100,.2))}
+body.lakshmiAnime .lakshmiMascot svg{transform:rotate(-1deg) scale(1.03)}
+.animeHalo{display:none;position:absolute;right:12px;bottom:45px;width:205px;height:205px;border:2px solid color-mix(in srgb,var(--accent2) 65%,transparent);border-radius:50%;box-shadow:0 0 24px color-mix(in srgb,var(--accent2) 28%,transparent),inset 0 0 24px color-mix(in srgb,var(--accent) 18%,transparent));animation:animeOrbit 2.4s linear infinite}
+body[data-theme="lakshmi"].lakshmiAnime .animeGlow{display:block;animation:animeSpin 5s linear infinite;transform-origin:110px 86px}
+.animeGlow{display:none}
+body[data-theme="lakshmi"].lakshmiAnime .lakshmiMascot svg{animation:animeBob 1.35s ease-in-out infinite;transform-origin:110px 150px}
+body[data-theme="lakshmi"].lakshmiAnime .coins circle{animation:coinBounce 1.05s ease-in-out infinite}
+body[data-theme="lakshmi"].lakshmiAnime .coins circle:nth-child(2){animation-delay:.12s}body[data-theme="lakshmi"].lakshmiAnime .coins circle:nth-child(3){animation-delay:.24s}body[data-theme="lakshmi"].lakshmiAnime .coins circle:nth-child(4){animation-delay:.36s}
+@keyframes animeBob{50%{transform:translateY(-8px) rotate(1deg) scale(1.035)}}
+@keyframes animeSpin{to{transform:rotate(360deg)}}@keyframes animeOrbit{to{transform:rotate(-360deg)}}@keyframes coinBounce{50%{transform:translateY(-8px) scale(1.12)}}
+
+.emptyState{text-align:center;padding:22px 8px}.emptyOrb{width:52px;height:52px;margin:0 auto 10px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:25px;color:var(--accent);background:var(--surface2);animation:orbPulse 2.4s ease-in-out infinite}@keyframes orbPulse{50%{transform:scale(1.07);box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 7%,transparent)}}</style>
+
+<style id="healed-theme-skins">
+/* =========================================================
+   MY FINANCE OS — HEALED THEME SKINS
+   The last stylesheet wins intentionally. Every visual world
+   owns its own background, surfaces, controls, borders, text,
+   effects and ambient layer.
+   ========================================================= */
+
+html{background:var(--bg)!important}
+body{
+  background:var(--bg)!important;
+  color:var(--text)!important;
+  min-height:100vh;
+  transition:background .4s ease,color .4s ease;
+}
+body::before,body::after{pointer-events:none}
+
+/* Shared component reset: eliminate old Solar V2 hard-coded colors */
+.card,.hero,.themeCard,.modalbox,.field input,.field select,.field textarea,
+nav button,.btn,.drop,.account,.tableWrap,.metric,.panel,.section{
+  color:var(--text);
+  background-color:var(--surface);
+  border-color:var(--line);
+}
+.muted,.brand p,.themeCard small,.newsItem small{color:var(--muted)!important}
+.field input,.field select,.field textarea{
+  color:var(--inputText)!important;
+  background:var(--input)!important;
+  border:1px solid var(--line)!important;
+}
+nav button,.btn{
+  color:var(--controlText)!important;
+  background:var(--control)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none;
+}
+nav button.active,.btn.primary{
+  color:#fff!important;
+  background:var(--accent)!important;
+  border-color:var(--accent)!important;
+  box-shadow:0 8px 24px color-mix(in srgb,var(--accent) 25%,transparent)!important;
+}
+.btn.danger{color:#fff!important;background:var(--expense)!important;border-color:var(--expense)!important}
+header{
+  background:color-mix(in srgb,var(--surface) 94%,transparent)!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.card,.hero,.themeCard{
+  box-shadow:var(--shadow)!important;
+}
+.card:hover,.themeCard:hover{
+  border-color:color-mix(in srgb,var(--accent) 45%,var(--line))!important;
+}
+.account::before,.account::after{background:none}
+.bar{background:var(--control)!important}
+.bar span{background:var(--accent)!important}
+.signal,.autoBadge,.pill{
+  background:var(--control)!important;color:var(--controlText)!important;
+  border-color:var(--line)!important;
+}
+.modal{background:rgba(0,0,0,.62)}
+.toast{background:var(--text)!important;color:var(--bg)!important}
+.floating-action{
+  background:var(--accent)!important;color:#fff!important;
+  box-shadow:0 12px 30px color-mix(in srgb,var(--accent) 30%,transparent)!important;
+}
+
+/* Ambient worlds are OFF by default. */
+#ecoScene,#ambientLayer{display:none!important}
+
+/* ---------- MINIMAL ---------- */
+body[data-theme="minimal"]{
+  --shadow:0 8px 24px rgba(0,0,0,.035);
+  background:#f7f7f5!important;
+}
+body[data-theme="minimal"] header{
+  backdrop-filter:none;
+  background:#f7f7f5!important;
+}
+body[data-theme="minimal"] .card,
+body[data-theme="minimal"] .hero,
+body[data-theme="minimal"] .themeCard{
+  border:1px solid #deded9!important;
+  box-shadow:none!important;
+  border-radius:12px;
+}
+body[data-theme="minimal"] nav button.active,
+body[data-theme="minimal"] .btn.primary{
+  background:#191919!important;border-color:#191919!important;
+  box-shadow:none!important;
+}
+body[data-theme="minimal"] .donut{box-shadow:none!important}
+
+/* ---------- NIGHT / DARK MODE ---------- */
+body[data-theme="night"]{
+  --shadow:0 18px 45px rgba(0,0,0,.38);
+  background:#121212!important;
+}
+body[data-theme="night"] header{
+  background:rgba(18,18,18,.96)!important;
+  backdrop-filter:blur(12px);
+}
+body[data-theme="night"] .card,
+body[data-theme="night"] .hero,
+body[data-theme="night"] .themeCard{
+  background:#1b1b1b!important;
+  border-color:#373737!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.32)!important;
+}
+body[data-theme="night"] .card:hover{box-shadow:0 18px 45px rgba(0,0,0,.42)!important}
+body[data-theme="night"] nav button,
+body[data-theme="night"] .btn{
+  background:#262626!important;color:#ededeb!important;border-color:#3a3a3a!important;
+}
+body[data-theme="night"] nav button.active,
+body[data-theme="night"] .btn.primary{
+  background:#8ab4f8!important;color:#101318!important;border-color:#8ab4f8!important;
+}
+body[data-theme="night"] .field input,
+body[data-theme="night"] .field select,
+body[data-theme="night"] .field textarea{
+  background:#1d1d1d!important;color:#f1f1ed!important;border-color:#414141!important;
+}
+body[data-theme="night"] .hero{
+  background:#1b1b1b!important;
+}
+body[data-theme="night"] .donut{
+  box-shadow:0 0 0 10px rgba(138,180,248,.06),0 18px 35px rgba(0,0,0,.3)!important;
+}
+
+/* ---------- MORNING / LIGHT ---------- */
+body[data-theme="morning"]{
+  background:#faf8f1!important;
+}
+body[data-theme="morning"] header{background:rgba(255,253,248,.96)!important}
+body[data-theme="morning"] .card,
+body[data-theme="morning"] .hero,
+body[data-theme="morning"] .themeCard{
+  background:#fffdf8!important;
+  border-color:#ded9cb!important;
+}
+body[data-theme="morning"] .hero{
+  background:linear-gradient(135deg,#fffdf8,#f5f0e5)!important;
+}
+
+/* ---------- SOLARPUNK ---------- */
+body[data-theme="solarpunk"]{
+  background:
+    radial-gradient(circle at 12% 10%,rgba(241,188,67,.20),transparent 20%),
+    radial-gradient(circle at 88% 20%,rgba(61,145,88,.16),transparent 24%),
+    linear-gradient(180deg,#eef5e7 0%,#f8fbf3 46%,#edf4e5 100%)!important;
+}
+body[data-theme="solarpunk"] #ecoScene,
+body[data-theme="solarpunk"] #ambientLayer{display:block!important}
+body[data-theme="solarpunk"] .hero{
+  background:linear-gradient(135deg,rgba(251,255,246,.96),rgba(231,244,218,.88))!important;
+  border-color:#c6d9b9!important;
+}
+body[data-theme="solarpunk"] .card{
+  background:rgba(251,255,246,.92)!important;
+  border-color:rgba(105,132,98,.25)!important;
+}
+body[data-theme="solarpunk"] nav button{
+  background:rgba(226,238,217,.82)!important;
+}
+
+/* ---------- LAKSHMI ---------- */
+body[data-theme="lakshmi"]{
+  background:
+    radial-gradient(circle at 82% 8%,rgba(239,178,72,.22),transparent 23%),
+    radial-gradient(circle at 15% 25%,rgba(184,59,98,.11),transparent 25%),
+    linear-gradient(180deg,#fffaf1,#fff6e9)!important;
+}
+body[data-theme="lakshmi"] #ambientLayer{display:block!important}
+body[data-theme="lakshmi"] #ambientLayer .ambientSun{
+  background:radial-gradient(circle,#ffd978 0 32%,rgba(255,217,120,.25) 55%,transparent 72%);
+}
+body[data-theme="lakshmi"] .card,
+body[data-theme="lakshmi"] .hero,
+body[data-theme="lakshmi"] .themeCard{
+  background:rgba(255,253,248,.94)!important;
+  border-color:#ead6bc!important;
+}
+body[data-theme="lakshmi"] .hero{
+  background:linear-gradient(135deg,#fffdf8,#fff1d8)!important;
+}
+body[data-theme="lakshmi"] nav button.active,
+body[data-theme="lakshmi"] .btn.primary{
+  background:linear-gradient(135deg,#9b5c18,#b83b62)!important;
+  border-color:#9b5c18!important;
+}
+body[data-theme="lakshmi"] #lakshmiStage{display:block!important}
+
+/* Anime Mode = only Lakshmi Mode. */
+body[data-theme="lakshmi"].lakshmiAnime #lakshmiStage .lakshmiMascot{
+  animation:lakshmiAnimeFloat 1.25s ease-in-out infinite!important;
+  filter:saturate(1.25) drop-shadow(0 12px 30px rgba(184,59,98,.28))!important;
+}
+body[data-theme="lakshmi"].lakshmiAnime #lakshmiStage .animeHalo{display:block!important}
+body[data-theme="lakshmi"].lakshmiAnime #lakshmiStage .animeGlow{
+  display:block!important;animation:animeSpin 4s linear infinite!important;
+}
+@keyframes lakshmiAnimeFloat{
+  0%,100%{transform:translateY(0) rotate(0) scale(1)}
+  50%{transform:translateY(-10px) rotate(1.5deg) scale(1.045)}
+}
+body[data-theme="lakshmi"].lakshmiAnime #lakshmiStage .coins circle{
+  animation:coinBounce .85s ease-in-out infinite!important;
+}
+
+/* ---------- SPRING ---------- */
+body[data-theme="spring"]{
+  background:
+    radial-gradient(circle at 15% 8%,rgba(244,190,211,.24),transparent 22%),
+    radial-gradient(circle at 82% 18%,rgba(176,218,190,.20),transparent 25%),
+    linear-gradient(180deg,#fbfcf8,#f3f9f1)!important;
+}
+body[data-theme="spring"] #ambientLayer{display:block!important}
+body[data-theme="spring"] #ambientLayer .ambientSun,
+body[data-theme="spring"] #ambientLayer .ambientLeaf{display:none}
+body[data-theme="spring"] .ambientPetal{display:block!important}
+body[data-theme="spring"] .card,
+body[data-theme="spring"] .hero,
+body[data-theme="spring"] .themeCard{
+  background:rgba(255,255,255,.9)!important;
+  border-color:#d6e5d7!important;
+  border-radius:20px;
+}
+body[data-theme="spring"] nav button.active,
+body[data-theme="spring"] .btn.primary{
+  background:linear-gradient(135deg,#4b8b65,#d67f9b)!important;
+}
+
+/* ---------- CYBERPUNK LAKSHMI ---------- */
+body[data-theme="cyberpunk"]{
+  --shadow:0 0 30px rgba(0,245,212,.08);
+  background:
+    radial-gradient(circle at 80% 10%,rgba(0,245,212,.16),transparent 24%),
+    radial-gradient(circle at 10% 72%,rgba(255,43,214,.14),transparent 28%),
+    #070b12!important;
+}
+body[data-theme="cyberpunk"] #ambientLayer{display:block!important}
+body[data-theme="cyberpunk"] #ambientLayer .ambientSun,
+body[data-theme="cyberpunk"] #ambientLayer .ambientLeaf{display:none}
+body[data-theme="cyberpunk"] #ambientLayer:after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(rgba(0,245,212,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,43,214,.035) 1px,transparent 1px);
+  background-size:34px 34px;
+}
+body[data-theme="cyberpunk"] header{
+  background:rgba(7,11,18,.92)!important;
+  border-color:#20354a!important;
+}
+body[data-theme="cyberpunk"] .card,
+body[data-theme="cyberpunk"] .hero,
+body[data-theme="cyberpunk"] .themeCard{
+  background:rgba(13,19,32,.94)!important;
+  border-color:#20354a!important;
+  box-shadow:0 0 0 1px rgba(0,245,212,.05),0 18px 50px rgba(0,0,0,.35)!important;
+}
+body[data-theme="cyberpunk"] nav button,
+body[data-theme="cyberpunk"] .btn{
+  background:#132238!important;color:#dffcff!important;border-color:#20354a!important;
+}
+body[data-theme="cyberpunk"] nav button.active,
+body[data-theme="cyberpunk"] .btn.primary{
+  background:linear-gradient(90deg,#00cdb4,#8a2be2)!important;
+  border-color:#00f5d4!important;
+  box-shadow:0 0 24px rgba(0,245,212,.22)!important;
+}
+body[data-theme="cyberpunk"] .field input,
+body[data-theme="cyberpunk"] .field select,
+body[data-theme="cyberpunk"] .field textarea{
+  background:#0b1421!important;color:#e8f7ff!important;border-color:#20354a!important;
+}
+body[data-theme="cyberpunk"] #lakshmiStage{display:block!important;width:290px;height:330px}
+body[data-theme="cyberpunk"] #lakshmiStage .lakshmiAura{
+  background:radial-gradient(circle,rgba(0,245,212,.30),rgba(255,43,214,.18) 42%,transparent 70%)!important;
+}
+body[data-theme="cyberpunk"] #lakshmiStage .lakshmiMascot{
+  filter:saturate(1.5) hue-rotate(8deg)
+    drop-shadow(0 0 20px rgba(0,245,212,.36))
+    drop-shadow(0 0 30px rgba(255,43,214,.22))!important;
+  animation:cyberLakshmiFloat 1.15s ease-in-out infinite!important;
+}
+@keyframes cyberLakshmiFloat{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-8px) scale(1.035)}
+}
+body[data-theme="cyberpunk"] #lakshmiStage .lakshmiCaption{
+  background:#0d1320!important;color:#a8fff4!important;
+  border-color:#00f5d4!important;box-shadow:0 0 20px rgba(0,245,212,.18)!important;
+}
+body[data-theme="cyberpunk"] #lakshmiStage .lakshmiPetals{
+  color:#00f5d4!important;text-shadow:0 0 10px #00f5d4;
+}
+body[data-theme="cyberpunk"] #lakshmiStage .animeHalo{
+  display:block!important;border-color:#ff2bd6!important;
+  box-shadow:0 0 24px rgba(255,43,214,.35),inset 0 0 24px rgba(0,245,212,.18)!important;
+}
+
+/* Lakshmi is NEVER visible in unrelated themes. */
+body:not([data-theme="lakshmi"]):not([data-theme="cyberpunk"]) #lakshmiStage{
+  display:none!important;
+}
+
+/* Theme transitions only affect visuals, not layout. */
+body[data-theme] .card,body[data-theme] .hero,body[data-theme] nav button,
+body[data-theme] .btn,body[data-theme] .themeCard,body[data-theme] input,
+body[data-theme] select,body[data-theme] textarea{
+  transition:background .35s ease,color .35s ease,border-color .35s ease,box-shadow .35s ease!important;
+}
+
+/* Accessibility / reduced motion */
+@media(prefers-reduced-motion:reduce){
+  body * ,body *::before,body *::after{animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+</style>
+
+
+<style id="lakshmi-home-world">
+/* =========================================================
+   HOME — LAKSHMI ANIME ABUNDANCE WORLD
+   Only rendered when body[data-theme="lakshmi"].
+   The money streams are decorative and pointer-events:none.
+   ========================================================= */
+.homeLakshmiWorld{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:0;
+  border-radius:28px;
+  opacity:0;
+  transition:opacity .5s ease;
+}
+body[data-theme="lakshmi"] .homeLakshmiWorld{opacity:1}
+#home{position:relative;isolation:isolate}
+#home > *:not(.homeLakshmiWorld){position:relative;z-index:1}
+
+.homeLakshmiAura{
+  position:absolute;
+  width:min(72vw,900px);
+  height:min(72vw,900px);
+  left:50%;
+  top:45%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,
+      rgba(255,223,126,.30) 0 13%,
+      rgba(230,91,139,.13) 30%,
+      rgba(255,194,73,.08) 48%,
+      transparent 72%);
+  filter:blur(2px);
+  animation:lakshmiAuraPulse 5s ease-in-out infinite;
+}
+@keyframes lakshmiAuraPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(.97);opacity:.7}
+  50%{transform:translate(-50%,-50%) scale(1.04);opacity:1}
+}
+
+.homeLakshmiFigure{
+  position:absolute;
+  width:min(520px,48vw);
+  height:620px;
+  left:50%;
+  top:49%;
+  transform:translate(-50%,-50%);
+  opacity:.16;
+  filter:drop-shadow(0 0 35px rgba(209,147,42,.20));
+  animation:homeLakshmiFloat 6s ease-in-out infinite;
+}
+@keyframes homeLakshmiFloat{
+  0%,100%{transform:translate(-50%,-50%) translateY(5px) scale(1)}
+  50%{transform:translate(-50%,-50%) translateY(-8px) scale(1.015)}
+}
+.homeLakshmiFigure .halo{
+  animation:haloSpin 20s linear infinite;
+  transform-origin:250px 190px;
+}
+@keyframes haloSpin{to{transform:rotate(360deg)}}
+
+.moneyStream{
+  position:absolute;
+  top:-20%;
+  font-weight:800;
+  color:#d69a2c;
+  text-shadow:0 0 12px rgba(255,203,77,.55);
+  opacity:.55;
+  animation:moneyRain linear infinite;
+}
+.moneyStream::after{
+  content:"₹";
+}
+.moneyStream.s1{left:5%;font-size:20px;animation-duration:9s;animation-delay:-2s}
+.moneyStream.s2{left:13%;font-size:30px;animation-duration:12s;animation-delay:-7s}
+.moneyStream.s3{left:22%;font-size:17px;animation-duration:8s;animation-delay:-5s}
+.moneyStream.s4{left:31%;font-size:26px;animation-duration:11s;animation-delay:-3s}
+.moneyStream.s5{left:43%;font-size:18px;animation-duration:7.5s;animation-delay:-4s}
+.moneyStream.s6{left:54%;font-size:32px;animation-duration:13s;animation-delay:-8s}
+.moneyStream.s7{left:66%;font-size:19px;animation-duration:8.5s;animation-delay:-1s}
+.moneyStream.s8{left:76%;font-size:29px;animation-duration:11.5s;animation-delay:-6s}
+.moneyStream.s9{left:87%;font-size:17px;animation-duration:7s;animation-delay:-3s}
+.moneyStream.s10{left:94%;font-size:25px;animation-duration:10s;animation-delay:-7s}
+@keyframes moneyRain{
+  0%{transform:translate3d(0,-10vh,0) rotate(-12deg);opacity:0}
+  12%{opacity:.55}
+  70%{opacity:.45}
+  100%{transform:translate3d(38px,125vh,0) rotate(18deg);opacity:0}
+}
+
+.coinOrbit{
+  position:absolute;
+  left:50%;
+  top:49%;
+  width:min(650px,62vw);
+  height:min(650px,62vw);
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(211,157,50,.18);
+  border-radius:50%;
+  animation:coinOrbit 22s linear infinite;
+}
+.coinOrbit::before,.coinOrbit::after{
+  content:"₹";
+  position:absolute;
+  width:36px;height:36px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:linear-gradient(145deg,#ffe69a,#c98a1e);
+  color:#704b0c;
+  font-weight:900;
+  box-shadow:0 0 18px rgba(225,171,55,.30);
+}
+.coinOrbit::before{left:5%;top:47%}
+.coinOrbit::after{right:5%;top:47%}
+@keyframes coinOrbit{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* Stronger anime motion only when Anime Mode is enabled. */
+body[data-theme="lakshmi"].lakshmiAnime .homeLakshmiFigure{
+  opacity:.22;
+  animation:homeLakshmiAnime 2.4s ease-in-out infinite;
+  filter:
+    drop-shadow(0 0 22px rgba(211,117,157,.25))
+    drop-shadow(0 0 38px rgba(255,205,77,.20));
+}
+@keyframes homeLakshmiAnime{
+  0%,100%{transform:translate(-50%,-50%) translateY(5px) scale(1) rotate(-.4deg)}
+  50%{transform:translate(-50%,-50%) translateY(-15px) scale(1.035) rotate(.7deg)}
+}
+body[data-theme="lakshmi"].lakshmiAnime .homeLakshmiAura{
+  animation-duration:2.2s;
+}
+body[data-theme="lakshmi"].lakshmiAnime .moneyStream{
+  animation-duration:6s;
+  color:#b83b62;
+  text-shadow:0 0 14px rgba(184,59,98,.42),0 0 24px rgba(255,211,94,.24);
+}
+
+/* Keep the Home world subtle behind readable content. */
+body[data-theme="lakshmi"] #home .card,
+body[data-theme="lakshmi"] #home .hero{
+  backdrop-filter:blur(7px);
+  background:rgba(255,253,248,.82)!important;
+}
+body[data-theme="lakshmi"] #home .hero{
+  background:linear-gradient(135deg,rgba(255,253,248,.90),rgba(255,242,218,.78))!important;
+}
+
+@media(max-width:900px){
+  .homeLakshmiFigure{width:380px;height:500px;opacity:.10}
+  .coinOrbit{width:520px;height:520px}
+}
+@media(prefers-reduced-motion:reduce){
+  .homeLakshmiWorld *{animation:none!important}
+}
+</style>
+
+
+<style id="home-finance-polish">
+.homeMarketBanner{
+  border-color:color-mix(in srgb,var(--accent) 24%,var(--line))!important;
+  background:color-mix(in srgb,var(--surface) 92%,var(--accent) 8%)!important;
+}
+.newsItem{cursor:pointer;transition:transform .2s ease,border-color .2s ease}
+.newsItem:hover{transform:translateX(3px);border-color:color-mix(in srgb,var(--accent) 42%,var(--line))}
+body[data-theme="cyberpunk"] .homeMarketBanner{
+  background:rgba(10,20,32,.9)!important;
+}
+body[data-theme="night"] .homeMarketBanner{
+  background:#191919!important;
+}
+</style>
+
+
+<style id="home-repair-style">
+.legendRow{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.legendRow span{display:flex;align-items:center;gap:8px}
+.legendRow i{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--accent)}
+.legendRow small{color:var(--muted);min-width:35px;text-align:right}
+.needWant .bar{height:7px;border-radius:99px;overflow:hidden;background:var(--control)}
+.needWant .bar span{display:block;height:100%;background:var(--accent);border-radius:99px}
+</style>
+
+
+<style id="lakshmi-pet-final">
+/* =========================================================
+   LAKSHMI PET — permanent, roaming, always animated
+   ========================================================= */
+#lakshmiStage{
+  position:fixed!important;
+  z-index:999!important;
+  width:220px!important;
+  height:280px!important;
+  display:none;
+  pointer-events:none!important;
+  touch-action:none!important;
+  user-select:none!important;
+  left:calc(100vw - 250px);
+  top:90px;
+  right:auto!important;
+  bottom:auto!important;
+  opacity:0;
+  transition:left 3.4s cubic-bezier(.22,.8,.22,1),top 3.4s cubic-bezier(.22,.8,.22,1),opacity .45s ease,filter .35s ease;
+}
+body[data-theme="lakshmi"] #lakshmiStage{
+  display:block!important;
+  opacity:1;
+}
+body:not([data-theme="lakshmi"]) #lakshmiStage{
+  display:none!important;
+  opacity:0!important;
+}
+#lakshmiStage.petRoaming .lakshmiMascot{
+  animation:lakshmiPetFloat 2.2s ease-in-out infinite!important;
+}
+@keyframes lakshmiPetFloat{
+  0%,100%{transform:translateY(0) rotate(-1deg) scale(1)}
+  50%{transform:translateY(-11px) rotate(1deg) scale(1.035)}
+}
+body[data-theme="lakshmi"] #lakshmiStage .animeHalo{
+  display:block!important;
+  animation:lakshmiHaloSpin 8s linear infinite!important;
+}
+body[data-theme="lakshmi"] #lakshmiStage .animeGlow{
+  display:block!important;
+  animation:lakshmiHaloSpin 5s linear infinite!important;
+}
+@keyframes lakshmiHaloSpin{to{transform:rotate(360deg)}}
+body[data-theme="lakshmi"] #lakshmiStage .coins circle{
+  animation:petCoin 1.3s ease-in-out infinite alternate!important;
+}
+@keyframes petCoin{
+  from{transform:translateY(0) scale(.92);opacity:.65}
+  to{transform:translateY(-8px) scale(1.08);opacity:1}
+}
+body[data-theme="lakshmi"] #lakshmiStage .lakshmiAura{
+  animation:petAura 2.8s ease-in-out infinite!important;
+}
+@keyframes petAura{
+  0%,100%{transform:scale(.92);opacity:.58}
+  50%{transform:scale(1.08);opacity:1}
+}
+body[data-theme="lakshmi"] #lakshmiStage .lakshmiPetals{
+  animation:petalPulse 2s ease-in-out infinite!important;
+}
+@keyframes petalPulse{50%{transform:translateY(-4px) scale(1.06);opacity:1}}
+body[data-theme="lakshmi"] #lakshmiStage .lakshmiCaption{
+  box-shadow:0 8px 28px rgba(155,92,24,.18)!important;
+}
+@media(max-width:700px){
+  #lakshmiStage{width:170px!important;height:220px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #lakshmiStage,#lakshmiStage *{animation:none!important;transition:none!important}
+}
+</style>
+
+
+<style id="lakshmi-pet-nonblocking">
+/* The Lakshmi companion is purely decorative: NEVER intercept clicks/taps. */
+#lakshmiStage{
+  pointer-events:auto!important;
+  touch-action:none!important;
+  user-select:none!important;
+  -webkit-user-drag:none!important;
+}
+/* Keep her visually above the UI while preserving click-through behavior. */
+#lakshmiStage{z-index:9999!important}
+/* On very small screens, keep the pet tucked into a corner. */
+@media(max-width:520px){
+  #lakshmiStage{width:145px!important;height:190px!important}
+}
+</style>
+
+
+<style id="lakshmi-pet-interactive">
+/* =========================================================
+   LAKSHMI PET 1.5 — interactive companion
+   She can be tapped, dragged, and speaks in bubbles.
+   ========================================================= */
+#lakshmiStage{
+  pointer-events:auto!important;
+  touch-action:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+  cursor:grab!important;
+  z-index:9999!important;
+}
+#lakshmiStage.dragging{
+  cursor:grabbing!important;
+  transition:none!important;
+}
+#lakshmiStage *{
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+#lakshmiStage .lakshmiMascot,
+#lakshmiStage .lakshmiAura,
+#lakshmiStage .animeHalo,
+#lakshmiStage .lakshmiPetals{
+  pointer-events:none!important;
+}
+#lakshmiStage .lakshmiCaption{
+  pointer-events:none!important;
+}
+#lakshmiStage .lakshmiSpeech{
+  position:absolute;
+  left:50%;
+  top:-62px;
+  transform:translateX(-50%) scale(.86);
+  width:max-content;
+  max-width:230px;
+  min-height:38px;
+  padding:10px 15px;
+  border-radius:18px 18px 18px 5px;
+  background:rgba(255,253,248,.97);
+  color:#4b2819;
+  border:1px solid #ead6bc;
+  box-shadow:0 10px 28px rgba(80,45,15,.18);
+  font-size:13px;
+  line-height:1.25;
+  font-weight:700;
+  opacity:0;
+  pointer-events:none!important;
+  transition:opacity .2s ease,transform .2s ease;
+  z-index:5;
+}
+#lakshmiStage .lakshmiSpeech:after{
+  content:"";
+  position:absolute;
+  left:20px;
+  bottom:-8px;
+  width:14px;height:14px;
+  background:inherit;
+  border-right:1px solid #ead6bc;
+  border-bottom:1px solid #ead6bc;
+  transform:rotate(45deg);
+}
+#lakshmiStage.speaking .lakshmiSpeech{
+  opacity:1;
+  transform:translateX(-50%) scale(1);
+}
+#lakshmiStage .lakshmiSpeech .bubbleSmall{
+  display:block;
+  margin-top:3px;
+  font-size:10px;
+  font-weight:600;
+  opacity:.65;
+}
+#lakshmiPetClose{
+  position:absolute;
+  right:-3px;
+  top:-14px;
+  width:22px;height:22px;
+  padding:0;
+  border-radius:50%;
+  border:1px solid #ead6bc;
+  background:#fffdf8;
+  color:#806d60;
+  font-size:14px;
+  line-height:18px;
+  cursor:pointer;
+  z-index:7;
+  opacity:0;
+  pointer-events:none!important;
+}
+#lakshmiStage.speaking #lakshmiPetClose{
+  opacity:1;
+  pointer-events:auto!important;
+}
+body[data-theme="lakshmi"] #lakshmiStage:focus-visible{
+  outline:2px solid #d99b32;
+  outline-offset:5px;
+  border-radius:22px;
+}
+body[data-theme="lakshmi"] #lakshmiStage.petHappy .lakshmiMascot{
+  animation:lakshmiHappyBounce .65s ease-in-out 2!important;
+}
+@keyframes lakshmiHappyBounce{
+  0%,100%{transform:translateY(0) scale(1)}
+  35%{transform:translateY(-16px) scale(1.07) rotate(-2deg)}
+  70%{transform:translateY(-4px) scale(1.02) rotate(2deg)}
+}
+body[data-theme="lakshmi"] #lakshmiStage.petTouched .lakshmiAura{
+  animation:lakshmiTouchGlow .7s ease-out 1!important;
+}
+@keyframes lakshmiTouchGlow{
+  0%{transform:scale(.75);opacity:.35}
+  60%{transform:scale(1.28);opacity:1}
+  100%{transform:scale(1);opacity:.65}
+}
+body[data-theme="lakshmi"] #lakshmiStage.petDragged .lakshmiMascot{
+  animation:lakshmiDragFloat .9s ease-in-out infinite!important;
+}
+@keyframes lakshmiDragFloat{
+  50%{transform:translateY(-7px) rotate(1.5deg) scale(1.04)}
+}
+body[data-theme="night"] #lakshmiStage .lakshmiSpeech,
+body[data-theme="minimal"] #lakshmiStage .lakshmiSpeech,
+body[data-theme="morning"] #lakshmiStage .lakshmiSpeech,
+body[data-theme="solarpunk"] #lakshmiStage .lakshmiSpeech,
+body[data-theme="spring"] #lakshmiStage .lakshmiSpeech{
+  /* Pet is hidden outside Lakshmi Mode; these rules only prevent leakage. */
+  display:none!important;
+}
+@media(max-width:520px){
+  #lakshmiStage .lakshmiSpeech{max-width:180px;font-size:12px}
+}
+</style>
+
+
+<style id="lakshmi-app-mode">
+/* =========================================================
+   APP MODE PET BEHAVIOUR
+   Browser: normal roaming companion.
+   Installed PWA / standalone app: tiny corner companion.
+   ========================================================= */
+
+/* Chrome / Edge / Android installed PWA */
+@media (display-mode: standalone){
+  body[data-theme="lakshmi"] #lakshmiStage{
+    width:112px!important;
+    height:142px!important;
+    left:auto!important;
+    top:auto!important;
+    right:12px!important;
+    bottom:12px!important;
+    transform-origin:bottom right!important;
+    transition:opacity .35s ease,filter .35s ease!important;
+  }
+
+  body[data-theme="lakshmi"] #lakshmiStage .lakshmiSpeech{
+    top:-52px!important;
+    right:0!important;
+    left:auto!important;
+    transform-origin:bottom right!important;
+    max-width:190px!important;
+    font-size:11px!important;
+    padding:7px 10px!important;
+    border-radius:14px 14px 4px 14px!important;
+  }
+
+  body[data-theme="lakshmi"] #lakshmiStage .lakshmiSpeech:after{
+    left:auto!important;
+    right:18px!important;
+  }
+
+  body[data-theme="lakshmi"] #lakshmiStage .lakshmiCaption{
+    transform:scale(.72)!important;
+    transform-origin:bottom right!important;
+  }
+
+  body[data-theme="lakshmi"] #lakshmiStage .animeHalo{
+    transform-origin:center!important;
+  }
+
+  body[data-theme="lakshmi"] #lakshmiStage .lakshmiPetClose{
+    width:18px!important;
+    height:18px!important;
+    right:-2px!important;
+    top:-7px!important;
+    font-size:11px!important;
+  }
+
+  /* In app mode she stays in her cosy corner rather than roaming
+     over the whole interface. */
+  body[data-theme="lakshmi"] #lakshmiStage.petRoaming .lakshmiMascot{
+    animation:lakshmiAppPetFloat 2.8s ease-in-out infinite!important;
+  }
+
+  @keyframes lakshmiAppPetFloat{
+    0%,100%{transform:translateY(0) rotate(-1deg) scale(.96)}
+    50%{transform:translateY(-5px) rotate(1deg) scale(1)}
+  }
+
+  body[data-theme="lakshmi"] #lakshmiStage .lakshmiAura{
+    animation-duration:4s!important;
+  }
+
+  /* Keep the Home background character subtle in standalone mode.
+     The corner pet is the star; the page remains readable. */
+  body[data-theme="lakshmi"] .homeLakshmiFigure{
+    opacity:.08!important;
+  }
+
+  body[data-theme="lakshmi"] .homeLakshmiWorld{
+    opacity:.72!important;
+  }
+}
+
+/* iOS standalone PWA */
+@media (display-mode: standalone), (-webkit-display-mode: standalone){
+  body[data-theme="lakshmi"] #lakshmiStage{
+    width:112px!important;
+    height:142px!important;
+    right:10px!important;
+    bottom:10px!important;
+    left:auto!important;
+    top:auto!important;
+  }
+}
+
+/* Very small installed screens */
+@media (display-mode: standalone) and (max-width:520px){
+  body[data-theme="lakshmi"] #lakshmiStage{
+    width:88px!important;
+    height:112px!important;
+    right:8px!important;
+    bottom:8px!important;
+  }
+}
+
+/* Desktop installed app gets a little more room, but still remains a pet. */
+@media (display-mode: standalone) and (min-width:1200px){
+  body[data-theme="lakshmi"] #lakshmiStage{
+    width:126px!important;
+    height:160px!important;
+    right:16px!important;
+    bottom:16px!important;
+  }
+}
+</style>
+
+
+<script id="lakshmi-app-mode-js">
+function isLakshmiAppMode(){
+  return !!(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches)
+      || !!window.navigator.standalone;
+}
+function placeLakshmiForMode(){
+  const el=document.getElementById("lakshmiStage");
+  if(!el || !lakshmiAllowed())return;
+  if(isLakshmiAppMode()){
+    el.style.left="auto";
+    el.style.top="auto";
+    el.style.right="12px";
+    el.style.bottom="12px";
+    el.classList.remove("dragging");
+  }
+}
+window.addEventListener("resize",placeLakshmiForMode);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)placeLakshmiForMode()});
+</script>
+
+</head>
+<body data-theme="solarpunk">
+<div id="ecoScene"><div class="sun"></div><div class="hill h1"></div><div class="hill h2"></div><div class="rail"></div>
+<div class="leaf" style="left:5%;top:60%;animation-delay:-1s"></div><div class="leaf" style="left:25%;top:72%;animation-delay:-5s"></div>
+<div class="leaf" style="left:62%;top:48%;animation-delay:-8s"></div><div class="leaf" style="left:80%;top:66%;animation-delay:-3s"></div></div>
+<div id="ambientLayer">
+  <div class="ambientSun"></div><div class="ambientGlow"></div>
+  <div class="ambientLeaf l1"></div><div class="ambientLeaf l2"></div><div class="ambientLeaf l3"></div>
+  <div class="ambientPetal p1"></div><div class="ambientPetal p2"></div><div class="ambientPetal p3"></div>
+</div>
+<div id="lakshmiStage" aria-hidden="false" tabindex="0" title="Drag me • tap me"><div class="lakshmiSpeech" id="lakshmiSpeech" role="status" aria-live="polite"></div><button class="lakshmiPetClose" aria-label="Hide Lakshmi speech" onclick="event.stopPropagation();hideLakshmiBubble()">×</button>
+  <div class="lakshmiAura"></div><div class="animeHalo"></div>
+  <div class="lakshmiMascot">
+    <svg viewBox="0 0 220 280" role="img" aria-label="Lakshmi anime abundance mascot">
+      <defs>
+        <linearGradient id="sari2" x1="0" x2="1"><stop offset="0" stop-color="#b83b62"/><stop offset=".52" stop-color="#e46b8d"/><stop offset="1" stop-color="#d99b32"/></linearGradient>
+        <radialGradient id="halo2"><stop stop-color="#ffe18a" stop-opacity=".95"/><stop offset="1" stop-color="#ffe18a" stop-opacity="0"/></radialGradient>
+        <linearGradient id="neon" x1="0" x2="1"><stop stop-color="#00f5d4"/><stop offset="1" stop-color="#ff2bd6"/></linearGradient>
+      </defs>
+      <circle cx="110" cy="86" r="74" fill="url(#halo2)" class="baseHalo"/>
+      <g class="animeGlow"><circle cx="110" cy="86" r="77" fill="none" stroke="url(#neon)" stroke-width="2" stroke-dasharray="5 9"/></g>
+      <path d="M54 116 Q110 148 166 116 L181 247 Q110 276 39 247Z" fill="url(#sari2)"/>
+      <path d="M58 157 Q110 188 162 157" fill="none" stroke="#ffd978" stroke-width="7" opacity=".9"/>
+      <circle cx="110" cy="88" r="34" fill="#f2bd95"/>
+      <path d="M75 86 Q110 35 145 86 Q140 48 110 44 Q80 48 75 86" fill="#3b241e"/>
+      <path d="M78 79 Q110 51 142 79" fill="none" stroke="#d99b32" stroke-width="5"/>
+      <circle cx="98" cy="91" r="4" fill="#39251f"/><circle cx="122" cy="91" r="4" fill="#39251f"/>
+      <path d="M99 106 Q110 116 121 106" fill="none" stroke="#9b5c18" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="110" cy="116" r="3" fill="#b83b62"/>
+      <path d="M50 143 Q17 120 22 92 Q56 96 69 129" fill="#f2bd95"/>
+      <path d="M170 143 Q203 120 198 92 Q164 96 151 129" fill="#f2bd95"/>
+      <path d="M34 95 Q22 83 18 69 M186 95 Q198 83 202 69" stroke="#d99b32" stroke-width="5" stroke-linecap="round"/>
+      <path d="M66 181 Q31 169 18 190 Q49 210 78 198" fill="#f2bd95"/>
+      <path d="M154 181 Q189 169 202 190 Q171 210 142 198" fill="#f2bd95"/>
+      <path d="M24 191 Q39 181 54 190" stroke="#d99b32" stroke-width="4"/><path d="M166 190 Q181 181 196 191" stroke="#d99b32" stroke-width="4"/>
+      <g class="coins"><circle cx="51" cy="232" r="9" fill="#ffd45e"/><circle cx="72" cy="244" r="7" fill="#eab63f"/><circle cx="169" cy="232" r="9" fill="#ffd45e"/><circle cx="148" cy="244" r="7" fill="#eab63f"/></g>
+      <path d="M90 244 Q110 224 130 244" fill="none" stroke="#fff1c9" stroke-width="4"/>
+    </svg>
+  </div>
+  <div class="lakshmiPetals">✦ ✧ ✦ ✧</div><div class="lakshmiCaption">✨ Abundance unlocked</div>
+</div>
+<div class="app">
+<header><div class="brand"><div><h1>💰 My Finance OS</h1><p>God Mode • animated • import-ready • everything editable</p></div><div class="actions"><button class="btn" onclick="openImport()">⬆ Import</button><button class="btn primary" onclick="openTx()">＋ Transaction</button></div></div><nav id="nav"></nav></header>
+<main>
+<section id="home" class="page active">
+<div class="homeLakshmiWorld" aria-hidden="true">
+  <div class="homeLakshmiAura"></div>
+  <div class="coinOrbit"></div>
+  <span class="moneyStream s1"></span><span class="moneyStream s2"></span>
+  <span class="moneyStream s3"></span><span class="moneyStream s4"></span>
+  <span class="moneyStream s5"></span><span class="moneyStream s6"></span>
+  <span class="moneyStream s7"></span><span class="moneyStream s8"></span>
+  <span class="moneyStream s9"></span><span class="moneyStream s10"></span>
+  <svg class="homeLakshmiFigure" viewBox="0 0 500 620" role="img" aria-label="Animated anime-inspired Lakshmi abundance background">
+    <defs>
+      <radialGradient id="hlHalo"><stop offset="0" stop-color="#ffeaa4" stop-opacity=".92"/><stop offset=".72" stop-color="#e2a83e" stop-opacity=".18"/><stop offset="1" stop-color="#e2a83e" stop-opacity="0"/></radialGradient>
+      <linearGradient id="hlSari" x1="0" x2="1"><stop offset="0" stop-color="#9d3c65"/><stop offset=".52" stop-color="#df7090"/><stop offset="1" stop-color="#d89c35"/></linearGradient>
+      <linearGradient id="hlGold"><stop stop-color="#fff1a6"/><stop offset=".5" stop-color="#d89c35"/><stop offset="1" stop-color="#a86d19"/></linearGradient>
+    </defs>
+    <g class="halo">
+      <circle cx="250" cy="175" r="132" fill="none" stroke="#e2ad4c" stroke-width="2" stroke-dasharray="3 13" opacity=".7"/>
+      <circle cx="250" cy="175" r="112" fill="url(#hlHalo)"/>
+    </g>
+    <!-- hair -->
+    <path d="M170 180 Q178 76 250 63 Q322 76 330 180 Q309 120 250 119 Q191 120 170 180Z" fill="#39241f"/>
+    <!-- face -->
+    <ellipse cx="250" cy="177" rx="61" ry="70" fill="#f1bf99"/>
+    <path d="M192 164 Q250 114 308 164" fill="none" stroke="#d69a2c" stroke-width="8"/>
+    <circle cx="228" cy="182" r="7" fill="#35251f"/>
+    <circle cx="272" cy="182" r="7" fill="#35251f"/>
+    <path d="M231 205 Q250 219 269 205" fill="none" stroke="#9b5c18" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="250" cy="222" r="5" fill="#b83b62"/>
+    <!-- crown -->
+    <path d="M204 121 L218 79 L250 106 L282 79 L296 121 Q250 139 204 121Z" fill="url(#hlGold)"/>
+    <!-- sari/body -->
+    <path d="M154 252 Q250 292 346 252 L392 560 Q250 615 108 560Z" fill="url(#hlSari)"/>
+    <path d="M164 315 Q250 356 336 315" fill="none" stroke="#ffe8a2" stroke-width="12" opacity=".85"/>
+    <path d="M174 392 Q250 430 326 392" fill="none" stroke="#f7d57c" stroke-width="6" opacity=".65"/>
+    <!-- upper arms -->
+    <path d="M164 282 Q82 244 63 174 Q59 158 72 151 Q87 145 98 162 Q119 205 202 236" fill="#f1bf99"/>
+    <path d="M336 282 Q418 244 437 174 Q441 158 428 151 Q413 145 402 162 Q381 205 298 236" fill="#f1bf99"/>
+    <!-- lower blessing hands -->
+    <path d="M174 347 Q83 326 53 380 Q47 393 58 402 Q70 411 84 402 Q116 382 197 394" fill="#f1bf99"/>
+    <path d="M326 347 Q417 326 447 380 Q453 393 442 402 Q430 411 416 402 Q384 382 303 394" fill="#f1bf99"/>
+    <!-- palms -->
+    <circle cx="62" cy="387" r="17" fill="#f1bf99"/>
+    <circle cx="438" cy="387" r="17" fill="#f1bf99"/>
+    <!-- lotus -->
+    <path d="M210 545 Q250 503 290 545 Q250 578 210 545Z" fill="#d96f94"/>
+    <path d="M228 544 Q250 515 272 544" fill="none" stroke="#ffe3a0" stroke-width="5"/>
+    <!-- flowing coins -->
+    <g fill="#ffd65f">
+      <circle cx="126" cy="496" r="11"/><circle cx="150" cy="526" r="8"/>
+      <circle cx="374" cy="496" r="11"/><circle cx="350" cy="526" r="8"/>
+    </g>
+  </svg>
+</div>
+</section><section id="money" class="page"></section><section id="transactions" class="page"></section><section id="cashflow" class="page"></section><section id="planning" class="page"></section><section id="insights" class="page"></section><section id="customize" class="page"></section>
+</main></div>
+<div class="modal" id="modal"><div class="modalbox" id="modalbox"></div></div><div id="toast" class="toast"></div>
+<script>
+const KEY="finance_os_god_animated_v1";
+const seed={
+settings:{theme:"solarpunk",currency:"₹",cashTarget:3000},
+transactions:[
+{id:1,date:"2026-09-09",type:"IN",desc:"Astrotalk tarot",amount:6460,cat:"Freelance Income",sub:"Tarot",method:"Bank Transfer",merchant:"Astrotalk",mode:"Online",from:"",to:"Bank",nw:"Income",rec:"Yes",tags:"Work",notes:"income"},
+{id:2,date:"2026-09-10",type:"OUT",desc:"Snack break with Balaji",amount:70,cat:"Food & Dining",sub:"Coffee/Tea",method:"UPI",merchant:"Other",mode:"Offline",from:"UPI Wallet",to:"",nw:"Want",rec:"No",tags:"Social",notes:""},
+{id:3,date:"2026-09-10",type:"OUT",desc:"Tofu, paratha, onion, soap",amount:253,cat:"Groceries",sub:"Groceries",method:"UPI",merchant:"Swiggy",mode:"Online",from:"UPI Wallet",to:"",nw:"Need",rec:"No",tags:"Home",notes:""},
+{id:4,date:"2026-09-10",type:"OUT",desc:"Milk + tea sachets",amount:40,cat:"Groceries",sub:"Dairy & Tea",method:"UPI",merchant:"Offline Store",mode:"Offline",from:"UPI Wallet",to:"",nw:"Need",rec:"Yes",tags:"Home",notes:""}],
+accounts:[
+{id:1,name:"Bank",kind:"Bank",balance:0,spendable:true,includeNetWorth:true},{id:2,name:"Cash",kind:"Cash",balance:0,spendable:true,includeNetWorth:true},{id:3,name:"UPI Wallet",kind:"Wallet",balance:0,spendable:true,includeNetWorth:true},{id:4,name:"Credit Card",kind:"Credit",balance:0,spendable:false,includeNetWorth:true},{id:5,name:"Savings",kind:"Savings",balance:0,spendable:false,includeNetWorth:true},{id:6,name:"Investments",kind:"Investment",balance:0,spendable:false,includeNetWorth:true}],
+categories:["Food & Dining","Groceries","Transport","Fuel","Shopping","Bills & Utilities","Rent","Healthcare","Education","Entertainment","Subscriptions","Travel","Personal Care","Home","Family","Charity","Bank / Fees","Taxes","Insurance","EMI / Loan","Investments","Other Expense"],
+incomeCats:["Salary","Freelance Income","Business Income","Investment Income","Refund","Gift / Other Income"],
+methods:["UPI","Cash","Debit Card","Credit Card","Bank Transfer","Net Banking","Wallet","Other"],
+budgets:{},recurring:[],goals:[],ious:[],assets:[],liabilities:[],eco:{mode:"Balanced",greenScore:72,monthlyCarbon:0,lowWaste:0},imports:[]
+};
+let db=load();let month=new Date().toISOString().slice(0,7);
+function load(){
+  let base=structuredClone(seed), raw={};
+  try{raw=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){}
+  dbMerge(base,raw);
+  base.settings=Object.assign({theme:"solarpunk",manualTheme:"solarpunk",animeLakshmi:false,lakshmiDay:"",lakshmiCount:0,lakshmiSlots:[],currency:"₹",cashTarget:3000},base.settings||{});
+  const arrs=["transactions","accounts","categories","incomeCats","methods","recurring","goals","ious","assets","liabilities","imports"];
+  arrs.forEach(k=>{if(!Array.isArray(base[k]))base[k]=structuredClone(seed[k]||[])});
+  if(!base.budgets||typeof base.budgets!=="object")base.budgets={};
+  return base;
+}
+function dbMerge(target,src){if(!src||typeof src!=="object")return target;Object.keys(src).forEach(k=>{if(src[k]!==undefined){if(Array.isArray(src[k]))target[k]=src[k];else if(src[k]&&typeof src[k]==="object"&&!Array.isArray(src[k]))target[k]=Object.assign(target[k]||{},src[k]);else target[k]=src[k]}});return target}
+function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function money(n){return (db.settings.currency||"₹")+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function ym(d){return String(d).slice(0,7)} function txm(){return db.transactions.filter(t=>ym(t.date)===month)} function sums(a){return{in:a.filter(t=>t.type==="IN").reduce((x,t)=>x+t.amount,0),out:a.filter(t=>t.type==="OUT").reduce((x,t)=>x+t.amount,0)}}
+function toast(x){let e=document.getElementById("toast");e.textContent=x;e.style.display="block";setTimeout(()=>e.style.display="none",1700)}
+function go(id){location.hash=id;render()} window.addEventListener("hashchange",render)
+function nav(){let items=[["home","Home"],["money","Money Map"],["transactions","Transactions"],["cashflow","Cash Flow"],["planning","Planning"],["insights","Insights"],["customize","Customize"]],cur=location.hash.slice(1)||"home";if(!document.getElementById(cur))cur="home";document.getElementById("nav").innerHTML=items.map(x=>`<button class="${cur===x[0]?"active":""}" onclick="go('${x[0]}')">${x[1]}</button>`).join("")}
+function render(){nav();let id=location.hash.slice(1)||"home";if(!document.getElementById(id)){id="home";history.replaceState(null,"","#home")}document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");try{({home,money:moneyPage,transactions,cashflow,planning,insights,customize}[id]||home)()}catch(err){if(id==="home")homeEmergency(err);else console.error("Page render error:",err)}if(id==="home")setTimeout(()=>{try{loadFinanceNews()}catch(e){}},80)}
+function animateNumber(el,value,format=true){let start=0,t0=performance.now(),dur=650;function f(t){let p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3),v=value*e;el.textContent=format?money(v):v.toFixed(1)+"%";if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+
+
+function sustainabilityScore(a){
+  let score=70, online=a.filter(t=>t.type==="OUT"&&t.mode==="Online").reduce((x,t)=>x+t.amount,0);
+  let transport=a.filter(t=>t.type==="OUT"&&["Transport","Fuel","Travel"].includes(t.cat)).reduce((x,t)=>x+t.amount,0);
+  let food=a.filter(t=>t.type==="OUT"&&t.cat==="Food & Dining").reduce((x,t)=>x+t.amount,0);
+  let reusable=a.filter(t=>t.type==="OUT"&&/reus|refill|repair|second|local|public|cycle|walk/i.test((t.desc||"")+" "+(t.tags||""))).length;
+  score += Math.min(12,reusable*2); score -= Math.min(10,transport/1000); score += Math.min(8,food/2500);
+  return Math.max(0,Math.min(100,Math.round(score)));
+}
+function ecoInsights(a){
+  let score=sustainabilityScore(a), food=a.filter(t=>t.type==="OUT"&&t.cat==="Food & Dining").reduce((x,t)=>x+t.amount,0);
+  let online=a.filter(t=>t.type==="OUT"&&t.mode==="Online").length;
+  let wants=a.filter(t=>t.type==="OUT"&&t.nw==="Want").reduce((x,t)=>x+t.amount,0);
+  let tips=[];
+  if(wants>0)tips.push("Try a 24-hour pause for wants above your chosen threshold.");
+  if(online>3)tips.push("Batch online orders to reduce packaging and delivery trips.");
+  if(food>1000)tips.push("Plan a few low-waste meals this month and track the savings.");
+  if(score>=80)tips.push("Great: your spending pattern is trending resource-conscious.");
+  if(!tips.length)tips.push("Add tags like repair, refill, walk, local or reusable to make the sustainability layer smarter.");
+  return tips;
+}
+function importPreview(){
+  return `<div class="signal"><i></i> DATA READY</div><h3 style="margin-top:10px">Drop in a bank export or spreadsheet</h3>
+  <p class="muted">The app normalizes common columns, keeps the raw transaction meaning, and lets you review before committing.</p>
+  <button class="btn primary" onclick="openImport()">⬆ Import Excel / CSV</button>`;
+}
+
+const MARKET_FALLBACK={
+  nifty:{v:23477.8,chg:0.20,label:"NIFTY 50 close"},
+  sensex:{v:74902.59,chg:0.19,label:"SENSEX close"},
+  gold24:{v:155510,chg:1.45,label:"24K / 10g indicative India"},
+  usd:{v:95.44,chg:-0.8,label:"USD/INR reference"}
+};
+async function fetchYahoo(symbol){
+  const url="https://query1.finance.yahoo.com/v8/finance/chart/"+encodeURIComponent(symbol)+"?range=1d&interval=5m";
+  const res=await fetch(url,{cache:"no-store"});if(!res.ok)throw Error("market fetch failed");
+  const j=await res.json(),r=j.chart.result?.[0];if(!r)throw Error("no data");
+  const p=r.indicators.quote[0].close.filter(x=>x!=null),last=p[p.length-1],first=p[0];
+  return {v:last,chg:first?((last-first)/first)*100:0};
+}
+async function refreshMarket(){
+  const status=document.querySelector(".refreshState");if(status)status.textContent="Updating live feed…";
+  try{
+    const [n,s,g,u]=await Promise.all([fetchYahoo("^NSEI"),fetchYahoo("^BSESN"),fetchYahoo("GC=F"),fetchYahoo("INR=X")]);
+    const goldPer10g=(g.v*u.v/31.1034768)*10;
+    db.market={nifty:n,sensex:s,gold24:{v:goldPer10g,chg:g.chg},usd:u};persist();render();toast("Market pulse refreshed ✓");
+  }catch(e){
+    db.market=db.market||MARKET_FALLBACK;persist();render();toast("Live feed unavailable — latest snapshot shown");
+  }
+}
+function marketSnapshot(){
+  const m=db.market||MARKET_FALLBACK;
+  const fmt=(x)=>Number(x).toLocaleString("en-IN",{maximumFractionDigits:2});
+  return `<div class="grid3">
+    <div class="card metric"><small>NIFTY 50</small><strong class="${m.nifty.chg>=0?"income":"expense"}">${fmt(m.nifty.v)}</strong><span class="muted">${m.nifty.chg>=0?"+":""}${Number(m.nifty.chg).toFixed(2)}% • latest snapshot</span></div>
+    <div class="card metric"><small>SENSEX</small><strong class="${m.sensex.chg>=0?"income":"expense"}">${fmt(m.sensex.v)}</strong><span class="muted">${m.sensex.chg>=0?"+":""}${Number(m.sensex.chg).toFixed(2)}% • latest snapshot</span></div>
+    <div class="card metric"><small>24K GOLD / 10g</small><strong class="${m.gold24.chg>=0?"income":"expense"}">₹${Math.round(m.gold24.v).toLocaleString("en-IN")}</strong><span class="muted">${m.gold24.chg>=0?"+":""}${Number(m.gold24.chg).toFixed(2)}% • indicative</span></div>
+  </div>`;
+}
+const FINANCE_NEWS_FALLBACK=[
+ {title:"Indian shares may face a weak opening as crude moves above $108.",source:"Reuters • latest India market setup"},
+ {title:"NIFTY 50 closed at 23,477.8 and Sensex at 74,902.59 in the latest session.",source:"Market coverage • latest session"},
+ {title:"Rupee pressure is building as oil prices rise and US yields approach 5%.",source:"Reuters • currency & macro"},
+ {title:"24K gold is around ₹1.55 lakh per 10g in the latest India rate snapshot.",source:"India gold-rate coverage • latest available"}
+];
+function financeNews(){
+ return `<div class="card"><div class="row"><div><h3>📰 Finance Pulse</h3><span class="muted">India markets • stocks • gold • macro</span></div><div class="actions"><button class="btn" onclick="loadFinanceNews()">↻ Refresh</button><button class="btn" onclick="openNews()">Google News →</button></div></div>
+ <div id="financeNewsList" class="newsList">${FINANCE_NEWS_FALLBACK.map(n=>`<div class="newsItem"><b>${n.title}</b><small>${n.source}</small></div>`).join("")}</div>
+ <div id="newsFeedStatus" class="muted" style="font-size:11px;margin-top:8px">Fallback snapshot ready • refresh tries the live Google News feed when the browser permits it.</div>
+ </div>`;
+}
+async function loadFinanceNews(){
+ const box=document.getElementById("financeNewsList"),status=document.getElementById("newsFeedStatus");
+ if(!box)return;
+ status.textContent="Fetching latest finance headlines…";
+ try{
+   const rss="https://news.google.com/rss/search?q=India%20finance%20stocks%20gold%20Nifty%20Sensex&hl=en-IN&gl=IN&ceid=IN:en";
+   const r=await fetch(rss,{cache:"no-store"});
+   if(!r.ok)throw new Error("feed");
+   const text=await r.text();
+   const xml=new DOMParser().parseFromString(text,"text/xml");
+   const items=[...xml.querySelectorAll("item")].slice(0,5).map(x=>({
+     title:(x.querySelector("title")?.textContent||"").replace(/\s+-\s+[^-]+$/,"").trim(),
+     source:x.querySelector("source")?.textContent||"Google News",
+     link:x.querySelector("link")?.textContent||""
+   })).filter(x=>x.title);
+   if(!items.length)throw new Error("empty");
+   box.innerHTML=items.map(n=>`<div class="newsItem" ${n.link?`onclick="window.open(${JSON.stringify(n.link)},'_blank','noopener')"`:""}><b>${n.title}</b><small>${n.source}</small></div>`).join("");
+   status.textContent=`Live feed refreshed • ${new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}`;
+ }catch(e){
+   status.textContent="Live feed unavailable in this browser • showing the latest built-in market snapshot.";
+ }
+}
+function openNews(){window.open("https://news.google.com/search?q=India%20finance%20markets%20stocks%20gold&hl=en-IN&gl=IN&ceid=IN%3Aen","_blank","noopener")}
+function openNews(){window.open("https://news.google.com/search?q=India%20finance%20markets%20stocks%20gold&hl=en-IN&gl=IN&ceid=IN%3Aen","_blank","noopener")}
+
+/* ===== HOME SAFETY HELPERS =====
+   These were missing from the 1.2 build and caused Home's template
+   to throw before innerHTML could be assigned. */
+function legend(a){
+  const out=a.filter(t=>t.type==="OUT");
+  const map={};
+  out.forEach(t=>map[t.cat]=(map[t.cat]||0)+Number(t.amount||0));
+  const rows=Object.entries(map).sort((x,y)=>y[1]-x[1]).slice(0,6);
+  if(!rows.length)return '<span class="muted">No expense categories yet.</span>';
+  const total=rows.reduce((x,r)=>x+r[1],0)||1;
+  return rows.map(([k,v])=>`<div class="legendRow"><span><i></i>${esc(k)}</span><b>${money(v)}</b><small>${Math.round(v/total*100)}%</small></div>`).join("");
+}
+function needWant(a){
+  const n=a.filter(t=>t.type==="OUT"&&t.nw==="Need").reduce((x,t)=>x+Number(t.amount||0),0);
+  const w=a.filter(t=>t.type==="OUT"&&t.nw==="Want").reduce((x,t)=>x+Number(t.amount||0),0);
+  const total=n+w||1;
+  return `<div class="needWant">
+    <div class="row"><span>Need</span><b>${money(n)}</b></div>
+    <div class="bar"><span style="width:${n/total*100}%"></span></div>
+    <div class="row" style="margin-top:12px"><span>Want</span><b>${money(w)}</b></div>
+    <div class="bar"><span style="width:${w/total*100}%"></span></div>
+    <small class="muted">Needs ${Math.round(n/total*100)}% • Wants ${Math.round(w/total*100)}%</small>
+  </div>`;
+}
+function mini(a){
+  if(!a.length)return '<p class="muted">No activity yet.</p>';
+  return a.map(t=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)">
+    <span><b>${esc(t.desc||t.cat||"Transaction")}</b><br><small class="muted">${esc(t.date||"")} • ${esc(t.merchant||t.method||"")}</small></span>
+    <b class="${t.type==="IN"?"income":"expense"}">${t.type==="IN"?"+":"−"}${money(t.amount)}</b>
+  </div>`).join("");
+}
+
+/* Never allow a rendering exception to produce a completely empty Home. */
+function homeEmergency(err){
+  const el=document.getElementById("home");
+  if(!el)return;
+  console.error("Home render recovered:",err);
+  el.innerHTML=`<div class="hero">
+    <span class="signal"><i></i> FINANCIAL COMMAND CENTER</span>
+    <h2 style="font-size:30px;margin:12px 0">Your money, alive on one screen. ⚡</h2>
+    <p class="muted">Home recovered safely. Your data is still intact.</p>
+    <div class="grid3 section">
+      <div class="card metric"><small>Transactions</small><strong>${db.transactions.length}</strong><span class="muted">captured entries</span></div>
+      <div class="card metric"><small>Accounts</small><strong>${db.accounts.length}</strong><span class="muted">connected accounts</span></div>
+      <div class="card metric"><small>Goals</small><strong>${db.goals.length}</strong><span class="muted">financial goals</span></div>
+    </div>
+    <div class="grid3 section">
+      <div class="card"><h3>📡 Market Pulse</h3><p class="muted">Latest available market snapshot.</p><button class="btn primary" onclick="refreshMarket()">Refresh market</button></div>
+      <div class="card"><h3>📰 Finance Pulse</h3><p class="muted">India stocks, gold, currency and macro headlines.</p><button class="btn" onclick="loadFinanceNews()">Refresh news</button></div>
+      <div class="card"><h3>＋ Capture</h3><p class="muted">Add a transaction or import your spreadsheet.</p><button class="btn primary" onclick="openTx()">Add transaction</button></div>
+    </div>
+  </div>`;
+}
+
+function home(){
+  const a=txm(),s=sums(a),net=s.in-s.out;
+  const spendable=db.accounts.filter(x=>x.spendable).reduce((x,a)=>x+Number(a.balance||0),0);
+  const assets=db.accounts.filter(x=>x.includeNetWorth&&x.kind!=="Credit").reduce((x,a)=>x+Number(a.balance||0),0)+db.assets.reduce((x,a)=>x+Number(a.value||0),0);
+  const debt=db.accounts.filter(x=>x.kind==="Credit").reduce((x,a)=>x+Number(a.balance||0),0)+db.liabilities.reduce((x,a)=>x+Number(a.amount||0),0);
+  const nw=assets-debt, cash=db.accounts.filter(x=>x.kind==="Cash").reduce((x,a)=>x+Number(a.balance||0),0);
+  const over=Math.max(cash-(db.settings.cashTarget||3000),0),score=sustainabilityScore(a),tips=ecoInsights(a);
+  const el=document.getElementById("home"); if(!el)return;
+  el.innerHTML=`
+  <div class="hero">
+    <div class="row"><div><span class="signal"><i></i> FINANCIAL COMMAND CENTER</span><h2 style="font-size:30px;margin-top:12px">Your money, alive on one screen. ⚡</h2><p class="muted">A living dashboard for cash, goals, spending patterns, commitments and the market.</p></div><div class="actions"><input type="month" value="${month}" onchange="month=this.value;render()"><button class="btn primary" onclick="openTx()">＋ Transaction</button></div></div>
+    <div class="energy-grid section">
+      <div class="eco-meter"><div class="sunMini"></div><div class="sprout"><div class="stem"></div><div class="leafA"></div><div class="leafB"></div></div><div style="position:absolute;left:18px;top:18px"><div class="kicker">Net worth</div><div class="big">${money(nw)}</div><div class="muted">${db.accounts.length} accounts • ${score}/100 ecosystem score</div></div></div>
+      <div class="card metric"><small>Spendable now</small><strong class="income">${money(spendable)}</strong><span class="muted">marked spendable accounts</span></div>
+      <div class="card metric"><small>${month} net</small><strong class="${net>=0?'income':'expense'}">${money(net)}</strong><span class="muted">${s.in?((net/s.in)*100).toFixed(1):0}% retained</span></div>
+    </div>
+  </div>
+  <div class="card section homeMarketBanner">
+    <div class="row">
+      <div><span class="signal"><i></i> TODAY'S MONEY WEATHER</span><h3 style="margin:8px 0 4px">Oil + currency pressure are the big macro watchpoints.</h3>
+      <p class="muted" style="margin:0">NIFTY 50 last close: 23,477.8 • Sensex: 74,902.59 • Brent: ~$108–109 • USD/INR: ~95.44 • 24K gold: ~₹1.55L/10g</p></div>
+      <button class="btn" onclick="loadFinanceNews()">Refresh pulse</button>
+    </div>
+  </div>
+  <div class="grid section">${[["Net worth",nw,"assets − liabilities"],["Spendable",spendable,"cash + wallets"],["Income",s.in,"this month"],["Expenses",s.out,"this month"]].map((x,i)=>`<div class="card metric"><small>${x[0]}</small><strong id="m${i}" class="${i===2?'income':i===3?'expense':''}">0</strong><span class="muted">${x[2]}</span></div>`).join("")}</div>
+  <div class="grid3 section">
+    <div class="card"><div class="kicker">Money weather</div><h3>${over?"⚠ Cash overflow":"✓ Cash is balanced"}</h3><p class="muted">${over?money(over)+" sits above your cash target.":"Liquidity is inside your chosen cash target."}</p><button class="btn" onclick="go('money')">Open Money Map →</button></div>
+    <div class="card"><div class="kicker">This month</div><h3>${a.length?"Activity detected":"Ready for your first entries"}</h3>${a.length?`<p class="muted">${a.length} transactions • top flow: ${money(s.out)} out / ${money(s.in)} in</p>`:`<p class="muted">Import your spreadsheet or add a transaction and this dashboard will populate automatically.</p>`}<button class="btn primary" onclick="${a.length?"go('transactions')":"openImport()"}">${a.length?"Review transactions":"Import Excel / CSV"}</button></div>
+    <div class="card"><div class="kicker">Next commitments</div>${db.recurring.slice().sort((a,b)=>Number(a.due)-Number(b.due)).slice(0,4).map(r=>`<div class="row" style="padding:7px 0;border-bottom:1px solid var(--line)"><span>${esc(r.name)}<br><small class="muted">Due ${r.due} • ${esc(r.freq)}</small></span><b>${money(r.amount)}</b></div>`).join("")||`<p class="muted">No commitments yet.</p><button class="btn" onclick="go('cashflow')">Build recurring plan →</button>`}</div>
+  </div>
+  <div class="grid3 section">
+    <div class="card"><h3>🌿 Sustainability</h3><div class="row"><div class="big">${score}</div><div class="muted">/100<br>living score</div></div><div class="bar" style="margin-top:10px"><span style="width:${score}%"></span></div>${tips.slice(0,2).map(t=>`<p class="muted">• ${esc(t)}</p>`).join("")}</div>
+    <div class="card"><h3>Expense constellation</h3>${a.filter(t=>t.type==='OUT').length?`<div class="chart"><div class="donut"></div><div class="legend">${legend(a)}</div></div>`:`<div class="emptyState"><div class="emptyOrb">◌</div><b>Your spending map will appear here.</b><p class="muted">Log a few expenses to reveal categories, needs and wants.</p></div>`}</div>
+    <div class="card"><h3>Need vs Want</h3>${a.length?needWant(a):`<div class="emptyState"><div class="emptyOrb">◇</div><b>Decision intelligence waiting.</b><p class="muted">Mark transactions as Need or Want and this panel will learn your pattern.</p></div>`}</div>
+  </div>
+  <div class="card section" id="marketPulse"><div class="row"><div><h3>📡 Market Pulse</h3><span class="muted refreshState">Latest available snapshot • refresh for live feed</span></div><button class="btn" onclick="refreshMarket()">↻ Refresh</button></div>${marketSnapshot()}</div>
+  <div class="section">${financeNews()}</div>
+  <div class="grid3 section"><div class="card">${importPreview()}</div><div class="card"><h3>Recent activity</h3>${a.length?mini(a.slice().sort((x,y)=>y.date.localeCompare(x.date)).slice(0,5)):`<p class="muted">No activity yet. Your first transaction will appear here.</p><button class="btn primary" onclick="openTx()">＋ Add first transaction</button>`}</div><div class="card"><h3>Daily ritual</h3><p class="muted">01 · Capture → 02 · Classify → 03 · Observe → 04 · Redirect excess.</p><p class="muted">The visuals change with your selected world; your financial data does not.</p></div></div>`;
+  [["m0",nw],["m1",spendable],["m2",s.in],["m3",s.out]].forEach(x=>animateNumber(document.getElementById(x[0]),x[1]));
+}
+
+function moneyPage(){let spend=db.accounts.filter(a=>a.spendable).reduce((x,a)=>x+Number(a.balance||0),0),sav=db.accounts.filter(a=>a.kind==="Savings").reduce((x,a)=>x+Number(a.balance||0),0),inv=db.accounts.filter(a=>a.kind==="Investment").reduce((x,a)=>x+Number(a.balance||0),0)+db.assets.reduce((x,a)=>x+Number(a.value||0),0),credit=db.accounts.filter(a=>a.kind==="Credit").reduce((x,a)=>x+Number(a.balance||0),0);document.getElementById("money").innerHTML=`<div class="row"><div><h2>Money Map</h2><p class="muted">Your money is separated by purpose, not dumped into one balance.</p></div><button class="btn primary" onclick="openAccount()">＋ Account</button></div><div class="grid section">${[["Spendable",spend,"income"],["Savings",sav,"purple"],["Investments",inv,"purple"],["Credit / debt",credit,"expense"]].map(x=>`<div class="card metric"><small>${x[0]}</small><strong class="${x[2]}">${money(x[1])}</strong></div>`).join("")}</div><h3 class="section">Accounts</h3><div class="grid3">${db.accounts.map((a,i)=>`<div class="card account"><div class="row"><b>${esc(a.name)}</b><button class="btn small" onclick="openAccount(${i})">Edit</button></div><div class="muted">${esc(a.kind)} • ${a.spendable?"Spendable":"Protected"}</div><div class="account-balance">${money(a.balance)}</div><div class="actions"><button class="btn small" onclick="editBalance(${i})">Update</button><button class="btn small" onclick="transfer(${i})">Transfer</button></div></div>`).join("")}</div><div class="grid3 section"><div class="card"><h3>Cash overflow</h3><div class="field"><label>Cash target</label><input type="number" value="${db.settings.cashTarget||3000}" onchange="db.settings.cashTarget=Number(this.value);save()"></div></div><div class="card"><h3>IOUs</h3>${db.ious.map(x=>`<div class="row" style="padding:7px 0"><span>${esc(x.person)}<br><small class="muted">${x.direction==="owed_to_me"?"owes you":"you owe"}</small></span><b>${money(x.amount)}</b></div>`).join("")||"<span class='muted'>None yet.</span>"}<button class="btn" style="margin-top:10px" onclick="addIOU()">＋ Add</button></div><div class="card"><h3>Other assets</h3>${db.assets.map(x=>`<div class="row" style="padding:7px 0"><span>${esc(x.name)}</span><b>${money(x.value)}</b></div>`).join("")||"<span class='muted'>None yet.</span>"}<button class="btn" style="margin-top:10px" onclick="addAsset()">＋ Add</button></div></div>`}
+
+function transactions(){document.getElementById("transactions").innerHTML=`<div class="row"><div><h2>Transactions</h2><p class="muted">Import, edit, search and classify everything.</p></div><div class="actions"><button class="btn" onclick="openImport()">⬆ Import data</button><button class="btn primary" onclick="openTx()">＋ Transaction</button></div></div><div class="card section"><div class="form"><div class="field"><label>Search</label><input id="q" oninput="filterTx()" placeholder="Swiggy, salary, tarot..."></div><div class="field"><label>Month</label><input id="fm" type="month" value="${month}" onchange="filterTx()"></div></div></div><div class="card tablewrap section" id="txlist">${txTable(db.transactions)}</div>`}
+function txTable(a){if(!a.length)return"<div class='muted' style='padding:20px;text-align:center'>No transactions.</div>";return`<table class="table"><thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Category</th><th>Merchant</th><th>Account</th><th>Amount</th><th></th></tr></thead><tbody>${a.slice().sort((x,y)=>y.date.localeCompare(x.date)).map(t=>`<tr><td>${t.date}</td><td><span class="pill ${t.type==="IN"?"in":t.type==="OUT"?"out":"transfer"}">${t.type}</span></td><td>${esc(t.desc)}</td><td>${esc(t.cat)}</td><td>${esc(t.merchant)}</td><td>${esc(t.from||t.to||"")}</td><td class="${t.type==="IN"?"income":t.type==="OUT"?"expense":"accent"}">${t.type==="IN"?"+":t.type==="OUT"?"-":""}${money(t.amount)}</td><td><button class="btn small" onclick="openTx(${t.id})">Edit</button></td></tr>`).join("")}</tbody></table>`}
+function filterTx(){let q=(document.getElementById("q")?.value||"").toLowerCase(),m=document.getElementById("fm")?.value||"";document.getElementById("txlist").innerHTML=txTable(db.transactions.filter(t=>(!m||ym(t.date)===m)&&Object.values(t).join(" ").toLowerCase().includes(q)))}
+
+function cashflow(){let rs=db.recurring.slice().sort((a,b)=>a.due-b.due),expense=rs.filter(r=>r.kind!=="income"&&r.kind!=="investment").reduce((x,r)=>x+Number(r.amount||0),0),income=rs.filter(r=>r.kind==="income").reduce((x,r)=>x+Number(r.amount||0),0);document.getElementById("cashflow").innerHTML=`<div class="row"><div><h2>Cash Flow & Commitments</h2><p class="muted">Recurring is now a future-money planner: bills, subscriptions, income and investments.</p></div><button class="btn primary" onclick="editRecurring(-1)">＋ Add commitment</button></div><div class="grid3 section">${[["Upcoming outflow",expense,"expense"],["Expected income",income,"income"],["Net scheduled",income-expense,""]].map(x=>`<div class="card metric"><small>${x[0]}</small><strong class="${x[2]}">${money(x[1])}</strong></div>`).join("")}</div><div class="card tablewrap section"><table class="table"><thead><tr><th>Item</th><th>Type</th><th>Amount</th><th>Due</th><th>Frequency</th><th>Account</th><th>Auto record</th><th>Paid</th><th></th></tr></thead><tbody>${rs.map((r,i)=>`<tr><td><b>${esc(r.name)}</b><br><small class="muted">${esc(r.note||"")}</small></td><td>${esc(r.kind)}</td><td>${money(r.amount)}</td><td>${r.due}</td><td>${esc(r.freq)}</td><td>${esc(r.account||"")}</td><td>${r.auto?"Yes":"No"}</td><td>${r.paid?"✓":"—"}</td><td><button class="btn small" onclick="editRecurring(${db.recurring.indexOf(r)})">Edit</button></td></tr>`).join("")||"<tr><td colspan=9 class='muted'>No commitments yet.</td></tr>"}</tbody></table></div><div class="card section"><h3>Projected spendable balance</h3><div class="big">${money(db.accounts.filter(a=>a.spendable).reduce((x,a)=>x+Number(a.balance||0),0)+income-expense)}</div><div class="muted">Current spendable + listed expected income − listed outflows.</div></div>`}
+
+function planning(){document.getElementById("planning").innerHTML=`<div class="row"><div><h2>Planning</h2><p class="muted">Budgets and goals that you can change without rebuilding the app.</p></div><button class="btn primary" onclick="goalModal(-1)">＋ Goal</button></div><div class="card section"><h3>Budgets — ${month}</h3>${db.categories.map(c=>{let a=txm().filter(t=>t.type==="OUT"&&t.cat===c).reduce((x,t)=>x+t.amount,0),b=Number(db.budgets[month+"|"+c]||0);return`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><div class="row"><span>${esc(c)}</span><span>${money(a)} / <input style="width:105px;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--input);color:var(--inputText)" type="number" value="${b}" onchange="setBudget('${esc(c)}',this.value)"></span></div><div class="bar" style="margin-top:5px"><span style="width:${b?Math.min(a/b*100,100):0}%;${b&&a>b?"background:var(--expense)":""}"></span></div></div>`}).join("")}</div><div class="grid3 section">${db.goals.map((g,i)=>`<div class="card"><div class="row"><b>${esc(g.name)}</b><button class="btn small" onclick="goalModal(${i})">Edit</button></div><div class="big">${money(g.saved)}</div><div class="muted">of ${money(g.target)}</div><div class="bar" style="margin-top:10px"><span style="width:${g.target?Math.min(g.saved/g.target*100,100):0}%"></span></div></div>`).join("")||"<div class='card muted'>No goals yet.</div>"}</div>`}
+
+function insights(){let a=txm(),s=sums(a),o={};a.filter(t=>t.type==="OUT").forEach(t=>o[t.cat]=(o[t.cat]||0)+t.amount);let top=Object.entries(o).sort((x,y)=>y[1]-x[1]),w=s.out?100*a.filter(t=>t.type==="OUT"&&t.nw==="Want").reduce((x,t)=>x+t.amount,0)/s.out:0;document.getElementById("insights").innerHTML=`<div class="row"><div><h2>Insights</h2><p class="muted">Patterns and decisions, not just a pile of numbers.</p></div><input type="month" value="${month}" onchange="month=this.value;render()"></div><div class="grid3 section">${[["Average daily spend",Object.keys(a.filter(t=>t.type==="OUT").reduce((o,t)=>(o[t.date]=1,o),{})).length?s.out/Object.keys(a.filter(t=>t.type==="OUT").reduce((o,t)=>(o[t.date]=1,o),{})).length:0],["Largest category",top[0]?top[0][0]:"—"],["Want share",w.toFixed(1)+"%"]].map(x=>`<div class="card metric"><small>${x[0]}</small><strong style="font-size:20px">${typeof x[1]==="number"?money(x[1]):esc(x[1])}</strong></div>`).join("")}</div><div class="grid3 section"><div class="card"><h3>Category ranking</h3>${top.map(x=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span>${esc(x[0])}</span><b>${money(x[1])}</b></div>`).join("")||"<span class='muted'>No data.</span>"}</div><div class="card"><h3>Monthly snapshot</h3><p>Income <b class="income">${money(s.in)}</b></p><p>Expenses <b class="expense">${money(s.out)}</b></p><p>Net <b>${money(s.in-s.out)}</b></p><p>Transactions <b>${a.length}</b></p></div><div class="card"><h3>Smart rules</h3><p class="muted">✓ Transfers do not count as spending.</p><p class="muted">✓ Protected savings are separated from spendable cash.</p><p class="muted">✓ Cash overflow is flagged against your target.</p><p class="muted">✓ Recurring items can be income, bills or investments.</p></div></div>`}
+
+function customize(){
+let themes=Object.entries(THEME_REGISTRY);
+document.getElementById("customize").innerHTML=`<h2>Customize & Data Hub</h2><p class="muted">One theme engine, seven worlds, plus automatic day/night.</p>
+<div class="card section"><div class="row"><div><h3>Theme garden</h3><span class="muted">Registry-based: new seasonal/animated themes can be added without restructuring the app.</span></div><span class="autoBadge">● ${db.settings.theme==="auto"?"AUTO: "+THEME_REGISTRY[systemTheme()].label:"MANUAL"}</span></div>
+<div class="themeGrid section">${themes.map(([k,t])=>`<button class="themeCard ${db.settings.theme===k?"selected":""}" onclick="setTheme('${k}')"><strong>${k==="minimal"?"◻️":k==="night"?"🌙":k==="morning"?"☀️":k==="solarpunk"?"🌱":k==="lakshmi"?"🪷":k==="cyberpunk"?"⚡":"🌸"} ${t.label}</strong><small>${t.desc}</small><div class="swatches"><i style="background:${k==="night"?"#121212":k==="minimal"?"#191919":k==="morning"?"#faf8f1":k==="solarpunk"?"#2f7d46":k==="lakshmi"?"#b83b62":k==="cyberpunk"?"#00f5d4":"#d67f9b"}"></i><i style="background:${k==="night"?"#8ab4f8":k==="minimal"?"#2b5fd9":k==="morning"?"#c58b36":k==="solarpunk"?"#d99b32":k==="lakshmi"?"#d99b32":k==="cyberpunk"?"#ff2bd6":"#4b8b65"}"></i></div></button>`).join("")}</div>
+<div class="actions" style="margin-top:12px"><button class="btn ${db.settings.theme==="auto"?"primary":""}" onclick="setAutoTheme(true)">🌗 Auto Day / Night</button><button class="btn" onclick="setAutoTheme(false)">Use manual theme</button></div></div>
+<div class="grid3 section">
+<div class="card"><h3>🪷 Lakshmi Mode</h3><p class="muted">Always-on animated Lakshmi companion. She roams around the screen like a little financial pet whenever Lakshmi Mode is selected — no daily limits.</p><label class="pill"><input type="checkbox" ${db.settings.animeLakshmi?"checked":""} onchange="db.settings.animeLakshmi=this.checked;applyTheme();persist()"> Anime Mode</label></div>
+<div class="card"><h3>📥 Import pipeline</h3><p class="muted">Excel / CSV / JSON → normalize → review → commit.</p><button class="btn primary" onclick="openImport()">⬆ Import data</button></div>
+<div class="card"><h3>📈 Market layer</h3><p class="muted">NIFTY, Sensex, indicative gold and finance news live on Home.</p><button class="btn" onclick="refreshMarket()">Refresh market</button></div></div>
+<div class="card section"><h3>Portable by design</h3><p class="muted">Local-first data, JSON backup, CSV export and the Excel dashboard remain separate from the visual theme layer.</p><div class="actions"><button class="btn" onclick="exportJSON()">Backup JSON</button><button class="btn" onclick="exportCSV()">CSV</button></div></div>
+<div class="card section"><h3>Safety switch</h3><button class="btn danger" onclick="resetApp()">Reset local data</button></div>`;
+}
+
+
+
+const THEME_REGISTRY={
+ minimal:{label:"Minimal",desc:"Quiet, typography-led, no decoration."},
+ night:{label:"Dark Mode",desc:"Soft near-black night palette."},
+ morning:{label:"Light Mode",desc:"Warm daylight palette."},
+ solarpunk:{label:"Solarpunk",desc:"Nature-tech, sun, green growth."},
+ lakshmi:{label:"Lakshmi Mode",desc:"Animated abundance mascot."},
+ spring:{label:"Spring Mode",desc:"Pastels, petals and bloom."},
+
+};
+function systemTheme(){return window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"night":"morning"}
+function effectiveTheme(){
+  let t=db.settings.theme==="auto"?systemTheme():(db.settings.theme||"solarpunk");
+  if(!["minimal","night","morning","solarpunk","lakshmi","spring"].includes(t)) t="solarpunk";
+  return t;
+}
+const THEME_TOKENS={
+ minimal:{bg:"#f7f7f5",surface:"#ffffff",surface2:"#f1f1ee",text:"#191919",muted:"#707070",line:"#deded9",accent:"#191919",accent2:"#555555",income:"#16803c",expense:"#b42318",warning:"#b54708",control:"#eeeeeb",controlText:"#2b2b2b",input:"#ffffff",inputText:"#191919"},
+ night:{bg:"#121212",surface:"#1b1b1b",surface2:"#232323",text:"#f1f1ed",muted:"#a5a5a0",line:"#373737",accent:"#8ab4f8",accent2:"#bb86fc",income:"#5bd18a",expense:"#ff6b6b",warning:"#ffb74d",control:"#262626",controlText:"#ededeb",input:"#1d1d1d",inputText:"#f1f1ed"},
+ morning:{bg:"#faf8f1",surface:"#fffdf8",surface2:"#f5f0e5",text:"#3b342b",muted:"#786f64",line:"#ded9cb",accent:"#9a6b2f",accent2:"#c58b36",income:"#287a4d",expense:"#b42318",warning:"#b54708",control:"#f0eadf",controlText:"#4b4035",input:"#fffdf9",inputText:"#3b342b"},
+ solarpunk:{bg:"#f3f7ec",surface:"#fbfff6",surface2:"#edf5df",text:"#183426",muted:"#647568",line:"#cbd9c2",accent:"#2f7d46",accent2:"#d99b32",income:"#237a48",expense:"#b42318",warning:"#a15c05",control:"#e6f0dd",controlText:"#244332",input:"#fbfff7",inputText:"#183426"},
+ lakshmi:{bg:"#fff8ed",surface:"#fffdf8",surface2:"#fff1d8",text:"#4b2819",muted:"#806d60",line:"#ead6bc",accent:"#9b5c18",accent2:"#b83b62",income:"#287a4d",expense:"#b42318",warning:"#a15c05",control:"#faead1",controlText:"#57341e",input:"#fffdf9",inputText:"#4b2819"},
+ spring:{bg:"#f7fbf6",surface:"#ffffff",surface2:"#f1f8f0",text:"#294034",muted:"#718074",line:"#d6e5d7",accent:"#4b8b65",accent2:"#d67f9b",income:"#287a4d",expense:"#b42318",warning:"#a15c05",control:"#edf5ee",controlText:"#35513e",input:"#ffffff",inputText:"#294034"}
+};
+function applyTheme(){
+  const t=effectiveTheme(), tokens=THEME_TOKENS[t]||THEME_TOKENS.solarpunk;
+  document.body.dataset.theme=t;
+  document.documentElement.dataset.theme=t;
+  Object.entries(tokens).forEach(([k,v])=>{
+    document.documentElement.style.setProperty("--"+k,v);
+    document.body.style.setProperty("--"+k,v);
+  });
+  document.body.classList.toggle("lakshmiAnime",t==="lakshmi");
+  document.body.classList.toggle("cyberpunkMode",false);
+  ["minimal","night","morning","solarpunk","lakshmi","spring"].forEach(k=>{
+    document.body.classList.toggle("theme-"+k,t===k);
+  });
+  // Keep every non-Lakshmi world completely free of the pet.
+  const pet=document.getElementById("lakshmiStage");
+  if(pet) pet.style.display=t==="lakshmi"?"block":"none";
+  if(t==="lakshmi") requestLakshmiPet();
+}
+function initAutoTheme(){const m=window.matchMedia?.("(prefers-color-scheme: dark)");m?.addEventListener?.("change",()=>{if(db.settings.theme==="auto"){applyTheme();render()}})}
+function setTheme(t){
+  if(!THEME_REGISTRY[t]) t="solarpunk";
+  db.settings.theme=t;
+  // Anime is no longer a separate switch: Lakshmi Mode is always animated.
+  db.settings.animeLakshmi=true;
+  applyTheme();
+  persist();
+  render();
+  toast((THEME_REGISTRY[t]?.label||t)+" enabled ✓");
+  if(t==="lakshmi") requestLakshmiPet(true);
+}
+function setAutoTheme(on){
+  if(on){
+    db.settings.manualTheme=db.settings.theme==="auto"?(db.settings.manualTheme||"solarpunk"):db.settings.theme;
+    db.settings.theme="auto";
+  }else{
+    db.settings.theme=db.settings.manualTheme||"solarpunk";
+  }
+  applyTheme();persist();render();
+}
+function lakshmiAllowed(){return effectiveTheme()==="lakshmi"}
+function showLakshmi(){
+  if(!lakshmiAllowed())return;
+  const el=document.getElementById("lakshmiStage");
+  if(!el)return;
+  el.style.display="block";
+  el.classList.add("show");
+  requestLakshmiPet(true);
+}
+function transactionBlessing(){if(lakshmiAllowed())showLakshmi()}
+
+/* Lakshmi is a permanent little companion in Lakshmi Mode.
+   No daily cap, no 08:00–19:00 window, no random slot limit. */
+let lakshmiPetTimer=null;
+let lakshmiPetRunning=false;
+function requestLakshmiPet(immediate=false){
+  if(!lakshmiAllowed()){
+    lakshmiPetRunning=false;
+    if(lakshmiPetTimer){clearTimeout(lakshmiPetTimer);lakshmiPetTimer=null}
+    const el=document.getElementById("lakshmiStage");
+    if(el)el.style.display="none";
+    return;
+  }
+  const el=document.getElementById("lakshmiStage");
+  if(!el)return;
+  el.style.display="block";
+  if(!lakshmiPetRunning){
+    lakshmiPetRunning=true;
+    moveLakshmiPet(true);
+  }else if(immediate){
+    moveLakshmiPet(true);
+  }
+}
+function moveLakshmiPet(first=false){
+  const el=document.getElementById("lakshmiStage");
+  if(isLakshmiAppMode()){
+    placeLakshmiForMode();
+    lakshmiPetRunning=false;
+    return;
+  }
+  if(!el || !lakshmiAllowed()){
+    lakshmiPetRunning=false;
+    return;
+  }
+  const pad=14, w=el.offsetWidth||220, h=el.offsetHeight||280;
+  const W=window.innerWidth, H=window.innerHeight;
+  const maxX=Math.max(pad,W-w-pad);
+  const maxY=Math.max(76,H-h-pad);
+
+  /* Pet-safe navigation:
+     1. The DOM itself is click-through (pointer-events:none).
+     2. Roaming is biased toward screen margins/corners.
+     3. Avoid the central content zone where forms/buttons usually live. */
+  const edge=Math.min(260,Math.max(150,Math.min(W,H)*.22));
+  const zones=[
+    [pad,pad,Math.min(edge,maxX),Math.min(edge,maxY)],                 // top-left
+    [Math.max(pad,maxX-edge),pad,maxX,maxY],                          // top-right
+    [pad,Math.max(76,maxY-edge),Math.min(edge,maxX),maxY],            // bottom-left
+    [Math.max(pad,maxX-edge),Math.max(76,maxY-edge),maxX,maxY],       // bottom-right
+    [pad,76,Math.min(edge,maxX),Math.min(76+edge,maxY)]               // upper-left travel
+  ];
+  const z=zones[Math.floor(Math.random()*zones.length)];
+  const x=z[0]+Math.random()*Math.max(1,z[2]-z[0]);
+  const y=z[1]+Math.random()*Math.max(1,z[3]-z[1]);
+  el.style.left=Math.round(x)+"px";
+  el.style.top=Math.round(y)+"px";
+  el.style.right="auto";
+  el.style.bottom="auto";
+  el.classList.add("petRoaming");
+  const delay=first?3200:(5200+Math.random()*4200);
+  if(lakshmiPetTimer)clearTimeout(lakshmiPetTimer);
+  lakshmiPetTimer=setTimeout(()=>moveLakshmiPet(false),delay);
+}
+window.addEventListener("resize",()=>{if(lakshmiAllowed())requestLakshmiPet()});
+
+
+
+/* =========================================================
+   INTERACTIVE LAKSHMI PET
+   ========================================================= */
+const LAKSHMI_LINES=[
+  "I'm here with you, little one. 🪷",
+  "Shall we make your money bloom? 💰",
+  "You can drag me anywhere you like!",
+  "A small step today becomes abundance tomorrow. ✨",
+  "Your money deserves attention, not fear.",
+  "Tap me again! I like company. 🌸",
+  "Let's protect your spendable money.",
+  "Every transaction tells me a story.",
+  "I see you. Keep going. 🪷",
+  "Abundance is built one decision at a time."
+];
+let lakshmiSpeechTimer=null;
+let lakshmiDrag=null;
+let lakshmiLastTap=0;
+
+function speakLakshmi(text,sub="Lakshmi • your finance companion"){
+  if(!lakshmiAllowed())return;
+  const el=document.getElementById("lakshmiStage");
+  const bubble=document.getElementById("lakshmiSpeech");
+  if(!el||!bubble)return;
+  bubble.innerHTML=`${esc(text)}<span class="bubbleSmall">${esc(sub)}</span>`;
+  el.classList.add("speaking","petHappy");
+  clearTimeout(lakshmiSpeechTimer);
+  lakshmiSpeechTimer=setTimeout(()=>{
+    el.classList.remove("speaking","petHappy");
+  },4200);
+}
+function hideLakshmiBubble(){
+  const el=document.getElementById("lakshmiStage");
+  if(el)el.classList.remove("speaking");
+}
+function lakshmiPetTouched(){
+  if(!lakshmiAllowed())return;
+  const now=Date.now();
+  const line=LAKSHMI_LINES[Math.floor(Math.random()*LAKSHMI_LINES.length)];
+  speakLakshmi(line,"Tap • Lakshmi is listening");
+  if(now-lakshmiLastTap<650){
+    speakLakshmi("Hehe! Double tap received. ✨","Lakshmi • happy!");
+  }
+  lakshmiLastTap=now;
+  const el=document.getElementById("lakshmiStage");
+  if(el){
+    el.classList.remove("petTouched");
+    void el.offsetWidth;
+    el.classList.add("petTouched");
+    setTimeout(()=>el.classList.remove("petTouched"),750);
+  }
+}
+function lakshmiPointerDown(e){
+  if(!lakshmiAllowed())return;
+  const el=document.getElementById("lakshmiStage");
+  if(!el)return;
+  e.preventDefault();
+  const r=el.getBoundingClientRect();
+  lakshmiDrag={
+    id:e.pointerId,
+    dx:e.clientX-r.left,
+    dy:e.clientY-r.top,
+    moved:false
+  };
+  try{el.setPointerCapture(e.pointerId)}catch(_){}
+  el.classList.add("dragging");
+  if(lakshmiPetTimer){clearTimeout(lakshmiPetTimer);lakshmiPetTimer=null}
+  lakshmiPetRunning=false;
+}
+function lakshmiPointerMove(e){
+  if(!lakshmiDrag||e.pointerId!==lakshmiDrag.id)return;
+  const el=document.getElementById("lakshmiStage");
+  if(!el)return;
+  const W=window.innerWidth,H=window.innerHeight;
+  const w=el.offsetWidth||220,h=el.offsetHeight||280;
+  const x=Math.max(8,Math.min(W-w-8,e.clientX-lakshmiDrag.dx));
+  const y=Math.max(72,Math.min(H-h-8,e.clientY-lakshmiDrag.dy));
+  if(Math.abs(e.movementX)+Math.abs(e.movementY)>2)lakshmiDrag.moved=true;
+  el.style.left=Math.round(x)+"px";
+  el.style.top=Math.round(y)+"px";
+  el.style.right="auto";el.style.bottom="auto";
+  el.classList.add("petDragged");
+}
+function lakshmiPointerUp(e){
+  if(!lakshmiDrag||e.pointerId!==lakshmiDrag.id)return;
+  const moved=lakshmiDrag.moved;
+  const el=document.getElementById("lakshmiStage");
+  lakshmiDrag=null;
+  if(el){
+    el.classList.remove("dragging","petDragged");
+    try{el.releasePointerCapture(e.pointerId)}catch(_){}
+  }
+  if(!moved)lakshmiPetTouched();
+  // Resume gentle roaming after the user has placed her.
+  if(lakshmiAllowed()){
+    lakshmiPetRunning=true;
+    if(lakshmiPetTimer)clearTimeout(lakshmiPetTimer);
+    lakshmiPetTimer=setTimeout(()=>moveLakshmiPet(false),9000);
+  }
+}
+function initLakshmiInteraction(){
+  const el=document.getElementById("lakshmiStage");
+  if(!el||el.dataset.interactiveReady)return;
+  el.dataset.interactiveReady="1";
+  el.addEventListener("pointerdown",lakshmiPointerDown);
+  el.addEventListener("pointermove",lakshmiPointerMove);
+  el.addEventListener("pointerup",lakshmiPointerUp);
+  el.addEventListener("pointercancel",lakshmiPointerUp);
+  el.addEventListener("keydown",e=>{
+    if(e.key==="Enter"||e.key===" "){
+      e.preventDefault();
+      lakshmiPetTouched();
+    }
+  });
+}
+function requestLakshmiPet(immediate=false){
+  const wasRunning=lakshmiPetRunning;
+  // preserve the original safety/visibility logic while adding interaction.
+  if(!lakshmiAllowed()){
+    lakshmiPetRunning=false;
+    if(lakshmiPetTimer){clearTimeout(lakshmiPetTimer);lakshmiPetTimer=null}
+    const el=document.getElementById("lakshmiStage");
+    if(el)el.style.display="none";
+    return;
+  }
+  const el=document.getElementById("lakshmiStage");
+  if(!el)return;
+  el.style.display="block";
+  initLakshmiInteraction();
+  if(!wasRunning){
+    lakshmiPetRunning=true;
+    moveLakshmiPet(true);
+  }else if(immediate && !lakshmiDrag){
+    moveLakshmiPet(true);
+  }
+}
+
+function openImport(){document.getElementById("modalbox").innerHTML=`<div class="row"><h2>Import your finance data</h2><button class="btn" onclick="closeModal()">✕</button></div><p class="muted">Upload <b>Excel (.xlsx)</b>, <b>CSV</b> or a previous <b>JSON backup</b>. The app will try to recognize common column names automatically.</p><div class="drop" id="drop"><b>Drop your file here</b><p class="muted">or choose a file from your device</p><button type="button" class="btn primary" onclick="document.getElementById('file').click()">Choose file</button><input id="file" type="file" accept=".xlsx,.xls,.csv,.json" hidden></div><div id="importStatus" class="muted" style="margin-top:12px"></div><p class="muted" style="font-size:12px">For Excel parsing, this prototype loads the SheetJS parser from its public CDN when available. JSON backup works fully offline.</p>`;
+document.getElementById("modal").classList.add("open");let f=document.getElementById("file"),d=document.getElementById("drop");f.onchange=e=>handleFile(e.target.files[0]);["dragenter","dragover"].forEach(x=>d.addEventListener(x,e=>{e.preventDefault();d.classList.add("drag")}));["dragleave","drop"].forEach(x=>d.addEventListener(x,e=>{e.preventDefault();d.classList.remove("drag")}));d.addEventListener("drop",e=>handleFile(e.dataTransfer.files[0]))}
+async function handleFile(file){if(!file)return;let st=document.getElementById("importStatus");st.textContent="Reading "+file.name+"…";try{if(file.name.toLowerCase().endsWith(".json")){let obj=JSON.parse(await file.text());db=obj;persist();document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openTx()}});
+applyTheme();initAutoTheme();render();if(effectiveTheme()==="lakshmi"){requestLakshmiPet(true);initLakshmiInteraction();placeLakshmiForMode();}st.textContent="Backup restored ✓";toast("Backup imported ✓");return}if(file.name.toLowerCase().endsWith(".csv")){let text=await file.text();let rows=parseCSV(text);importRows(rows);st.textContent="Imported "+rows.length+" rows ✓";return}if(/\.xlsx?$/i.test(file.name)){await loadSheetJS();let data=await file.arrayBuffer(),book=XLSX.read(data,{type:"array"}),sheet=book.Sheets[book.SheetNames[0]],rows=XLSX.utils.sheet_to_json(sheet,{defval:""});importRows(rows);st.textContent="Imported "+rows.length+" rows from "+book.SheetNames[0]+" ✓";return}throw Error("Unsupported file")}catch(e){st.textContent="Could not import: "+e.message}}
+function loadSheetJS(){return new Promise((resolve,reject)=>{if(window.XLSX)return resolve();let s=document.createElement("script");s.src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";s.onload=resolve;s.onerror=()=>reject(Error("Excel parser could not load. Try CSV or JSON."));document.head.appendChild(s)})}
+function parseCSV(text){let lines=text.split(/\r?\n/).filter(x=>x.trim()),head=lines.shift().split(",").map(x=>x.replace(/^"|"$/g,""));return lines.map(line=>{let vals=[],cur="",q=false;for(let i=0;i<line.length;i++){let c=line[i];if(c==='"')q=!q;else if(c===","&&!q){vals.push(cur);cur=""}else cur+=c}vals.push(cur);let o={};head.forEach((h,i)=>o[h]=String(vals[i]??"").replace(/^"|"$/g,"").replace(/""/g,'"'));return o})}
+function norm(x){return String(x??"").toLowerCase().replace(/[^a-z0-9]/g,"")}
+function pick(o,names){let k=Object.keys(o).find(k=>names.includes(norm(k)));return k?o[k]:""}
+function importRows(rows){let added=0;for(let r of rows){let amount=parseFloat(String(pick(r,["amount","amountru","value","total","debit","credit"])).replace(/[₹,\s]/g,""));if(!isFinite(amount)||amount===0)continue;let rawType=norm(pick(r,["type","transactiontype","inout"])),type=rawType.includes("income")||rawType==="in"||rawType==="credit"?"IN":rawType.includes("transfer")?"TRANSFER":"OUT";let date=pick(r,["date","transactiondate","dt"])||new Date().toISOString().slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){let d=new Date(date);if(!isNaN(d))date=d.toISOString().slice(0,10)}db.transactions.push({id:Date.now()+added,date,type,desc:pick(r,["description","desc","details","narration","particulars"])||"Imported transaction",amount,cat:pick(r,["category","cat"])||(type==="IN"?"Imported Income":"Other Expense"),sub:pick(r,["subcategory","subcat","sub"]),method:pick(r,["paymentmode","paymentmethod","method","mode"])||"Other",merchant:pick(r,["merchant","platform","merchantplatform","vendor"]),mode:pick(r,["onlineoffline","mode"])||"Unknown",from:pick(r,["fromaccount","account","accountwallet","wallet"]),to:pick(r,["toaccount"]),nw:pick(r,["needwant","needorwant","nw"])||"N/A",rec:pick(r,["recurring","recurringyesno"])||"No",tags:pick(r,["tags"]),notes:pick(r,["notes","note"])});added++}persist();render();toast(added+" transactions imported ✓")}
+function openTx(id=null){let t=id?db.transactions.find(x=>x.id===id):null,acc=db.accounts.map(a=>`<option>${esc(a.name)}</option>`).join("");document.getElementById("modalbox").innerHTML=`<div class="row"><h2>${t?"Edit":"Add"} transaction</h2><button class="btn" onclick="closeModal()">✕</button></div><form onsubmit="submitTx(event,${id||0})"><div class="form"><div class="field"><label>Date</label><input name="date" type="date" required value="${t?.date||new Date().toISOString().slice(0,10)}"></div><div class="field"><label>Type</label><select name="type"><option ${t?.type==="IN"?"selected":""}>IN</option><option ${t?.type==="OUT"||!t?"selected":""}>OUT</option><option ${t?.type==="TRANSFER"?"selected":""}>TRANSFER</option></select></div><div class="field full"><label>Description</label><input name="desc" required value="${esc(t?.desc||"")}"></div><div class="field"><label>Amount</label><input name="amount" type="number" step=".01" required value="${t?.amount||""}"></div><div class="field"><label>Category</label><input name="cat" list="cats" value="${esc(t?.cat||"")}"><datalist id="cats">${[...db.incomeCats,...db.categories].map(x=>`<option>${esc(x)}</option>`).join("")}</datalist></div><div class="field"><label>Subcategory</label><input name="sub" value="${esc(t?.sub||"")}"></div><div class="field"><label>Payment mode</label><select name="method">${db.methods.map(x=>`<option ${t?.method===x?"selected":""}>${x}</option>`).join("")}</select></div><div class="field"><label>Merchant / platform</label><input name="merchant" value="${esc(t?.merchant||"")}"></div><div class="field"><label>Online / Offline</label><select name="mode"><option>Online</option><option ${t?.mode==="Offline"?"selected":""}>Offline</option><option ${t?.mode==="Internal"?"selected":""}>Internal</option></select></div><div class="field"><label>Account</label><select name="from"><option value="">—</option>${acc}</select></div><div class="field"><label>Need / Want</label><select name="nw"><option>Need</option><option ${t?.nw==="Want"?"selected":""}>Want</option><option>Investment</option><option>Income</option><option>N/A</option></select></div><div class="field"><label>Recurring?</label><select name="rec"><option>No</option><option ${t?.rec==="Yes"?"selected":""}>Yes</option></select></div><div class="field"><label>Tags</label><input name="tags" value="${esc(t?.tags||"")}"></div><div class="field full"><label>Notes</label><textarea name="notes">${esc(t?.notes||"")}</textarea></div></div><div class="actions" style="margin-top:14px"><button class="btn primary">Save</button>${t?`<button type="button" class="btn danger" onclick="deleteTx(${t.id})">Delete</button>`:""}</div></form>`;document.getElementById("modal").classList.add("open");if(t)document.querySelector('select[name="from"]').value=t.from||""}
+function submitTx(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.amount=Number(o.amount);o.id=id||Date.now();if(id)db.transactions[db.transactions.findIndex(x=>x.id===id)]=o;else db.transactions.push(o);closeModal();save()}
+function deleteTx(id){if(confirm("Delete transaction?")){db.transactions=db.transactions.filter(x=>x.id!==id);closeModal();save()}}
+function openAccount(i=null){let a=i==null?null:db.accounts[i];document.getElementById("modalbox").innerHTML=`<div class="row"><h2>${a?"Edit":"Add"} account</h2><button class="btn" onclick="closeModal()">✕</button></div><form onsubmit="submitAccount(event,${i==null?-1:i})"><div class="form"><div class="field"><label>Name</label><input name="name" required value="${esc(a?.name||"")}"></div><div class="field"><label>Kind</label><select name="kind">${["Bank","Cash","Wallet","Savings","Credit","Investment","Other"].map(x=>`<option ${a?.kind===x?"selected":""}>${x}</option>`).join("")}</select></div><div class="field"><label>Current balance</label><input name="balance" type="number" step=".01" value="${a?.balance||0}"></div><div class="field"><label>Spendable?</label><select name="spendable"><option value="true" ${a?.spendable!==false?"selected":""}>Yes</option><option value="false" ${a?.spendable===false?"selected":""}>No</option></select></div><div class="field"><label>Include in net worth?</label><select name="include"><option value="true" ${a?.includeNetWorth!==false?"selected":""}>Yes</option><option value="false" ${a?.includeNetWorth===false?"selected":""}>No</option></select></div></div><div class="actions" style="margin-top:14px"><button class="btn primary">Save</button>${a?`<button type="button" class="btn danger" onclick="db.accounts.splice(${i},1);closeModal();save()">Delete</button>`:""}</div></form>`;document.getElementById("modal").classList.add("open")}
+function submitAccount(e,i){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=i<0?Date.now():db.accounts[i].id;o.balance=Number(o.balance);o.spendable=o.spendable==="true";o.includeNetWorth=o.include==="true";delete o.include;if(i<0)db.accounts.push(o);else db.accounts[i]=o;closeModal();save()}
+function editBalance(i){let a=db.accounts[i];document.getElementById("modalbox").innerHTML=`<div class="row"><h2>Update ${esc(a.name)}</h2><button class="btn" onclick="closeModal()">✕</button></div><form onsubmit="e=>0"><div class="field"><label>Real current balance</label><input id="bal" type="number" step=".01" value="${a.balance}"></div><p class="muted">Reconciliation only — no fake transaction is created.</p><button type="button" class="btn primary" style="margin-top:12px" onclick="db.accounts[${i}].balance=Number(document.getElementById('bal').value);closeModal();save()">Save balance</button></form>`;document.getElementById("modal").classList.add("open")}
+function transfer(i){let a=db.accounts[i],opts=db.accounts.filter((x,j)=>j!==i).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join("");document.getElementById("modalbox").innerHTML=`<div class="row"><h2>Transfer from ${esc(a.name)}</h2><button class="btn" onclick="closeModal()">✕</button></div><form onsubmit="submitTransfer(event,${a.id})"><div class="form"><div class="field"><label>To</label><select name="to">${opts}</select></div><div class="field"><label>Amount</label><input name="amount" type="number" step=".01" required></div></div><button class="btn primary" style="margin-top:12px">Transfer</button></form>`;document.getElementById("modal").classList.add("open")}
+function submitTransfer(e,id){e.preventDefault();let f=new FormData(e.target),to=db.accounts.find(x=>x.id===Number(f.get("to"))),from=db.accounts.find(x=>x.id===id),amt=Number(f.get("amount"));if(amt<=0||amt>from.balance)return alert("Check amount/source balance.");from.balance-=amt;to.balance+=amt;db.transactions.push({id:Date.now(),date:new Date().toISOString().slice(0,10),type:"TRANSFER",desc:`Transfer: ${from.name} → ${to.name}`,amount:amt,cat:"Transfer",sub:"",method:"Bank Transfer",merchant:"Internal",mode:"Internal",from:from.name,to:to.name,nw:"N/A",rec:"No",tags:"",notes:""});closeModal();save()}
+function editRecurring(i){let r=i<0?null:db.recurring[i];document.getElementById("modalbox").innerHTML=`<div class="row"><h2>${r?"Edit":"Add"} commitment</h2><button class="btn" onclick="closeModal()">✕</button></div><form onsubmit="submitRecurring(event,${i})"><div class="form"><div class="field"><label>Name</label><input name="name" required value="${esc(r?.name||"")}"></div><div class="field"><label>Type</label><select name="kind"><option value="bill">Bill</option><option value="subscription">Subscription</option><option value="income">Expected income</option><option value="investment">Investment</option><option value="other">Other</option></select></div><div class="field"><label>Amount</label><input name="amount" type="number" step=".01" value="${r?.amount||""}"></div><div class="field"><label>Due day</label><input name="due" type="number" min="1" max="31" value="${r?.due||1}"></div><div class="field"><label>Frequency</label><select name="freq"><option>Monthly</option><option>Weekly</option><option>Yearly</option></select></div><div class="field"><label>Account</label><select name="account">${db.accounts.map(a=>`<option>${esc(a.name)}</option>`).join("")}</select></div><div class="field"><label>Auto record?</label><select name="auto"><option value="true">Yes</option><option value="false">No</option></select></div><div class="field"><label>Paid?</label><select name="paid"><option value="false">No</option><option value="true">Yes</option></select></div><div class="field full"><label>Note</label><textarea name="note">${esc(r?.note||"")}</textarea></div></div><div class="actions" style="margin-top:14px"><button class="btn primary">Save</button>${r?`<button type="button" class="btn danger" onclick="db.recurring.splice(${i},1);closeModal();save()">Delete</button>`:""}</div></form>`;document.getElementById("modal").classList.add("open")}
+function submitRecurring(e,i){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.amount=Number(o.amount);o.due=Number(o.due);o.auto=o.auto==="true";o.paid=o.paid==="true";if(i<0)db.recurring.push(o);else db.recurring[i]=o;closeModal();save()}
+function goalModal(i){let g=i<0?null:db.goals[i];document.getElementById("modalbox").innerHTML=`<div class="row"><h2>${g?"Edit":"Add"} goal</h2><button class="btn" onclick="closeModal()">✕</button></div><form onsubmit="submitGoal(event,${i})"><div class="form"><div class="field"><label>Goal</label><input name="name" required value="${esc(g?.name||"")}"></div><div class="field"><label>Target</label><input name="target" type="number" value="${g?.target||""}"></div><div class="field"><label>Saved</label><input name="saved" type="number" value="${g?.saved||""}"></div><div class="field"><label>Target date</label><input name="date" type="date" value="${g?.date||""}"></div></div><button class="btn primary" style="margin-top:12px">Save</button></form>`;document.getElementById("modal").classList.add("open")}
+function submitGoal(e,i){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.target=Number(o.target);o.saved=Number(o.saved);if(i<0)db.goals.push(o);else db.goals[i]=o;closeModal();save()}
+function setBudget(c,v){db.budgets[month+"|"+c]=Number(v);persist();render()}
+function addIOU(){document.getElementById("modalbox").innerHTML=`<div class="row"><h2>Add IOU</h2><button class="btn" onclick="closeModal()">✕</button></div><form onsubmit="let f=new FormData(event.target);db.ious.push({person:f.get('person'),amount:Number(f.get('amount')),direction:f.get('direction')});closeModal();save();return false"><div class="form"><div class="field"><label>Person</label><input name="person" required></div><div class="field"><label>Amount</label><input name="amount" type="number"></div><div class="field"><label>Direction</label><select name="direction"><option value="owed_to_me">They owe me</option><option value="i_owe">I owe them</option></select></div></div><button class="btn primary" style="margin-top:12px">Save</button></form>`;document.getElementById("modal").classList.add("open")}
+function addAsset(){document.getElementById("modalbox").innerHTML=`<div class="row"><h2>Add asset</h2><button class="btn" onclick="closeModal()">✕</button></div><form onsubmit="let f=new FormData(event.target);db.assets.push({name:f.get('name'),value:Number(f.get('value'))});closeModal();save();return false"><div class="form"><div class="field"><label>Asset</label><input name="name" required></div><div class="field"><label>Current value</label><input name="value" type="number"></div></div><button class="btn primary" style="margin-top:12px">Save</button></form>`;document.getElementById("modal").classList.add("open")}
+function exportJSON(){download("my-finance-os-backup.json",JSON.stringify(db,null,2),"application/json")}
+function exportCSV(){let h=["Date","Type","Description","Amount","Category","Subcategory","Payment Mode","Merchant","Online/Offline","From Account","To Account","Need/Want","Recurring","Tags","Notes"],rows=db.transactions.map(t=>[t.date,t.type,t.desc,t.amount,t.cat,t.sub,t.method,t.merchant,t.mode,t.from,t.to,t.nw,t.rec,t.tags,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\\n");download("finance-transactions.csv",csv,"text/csv")}
+function download(name,data,type){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click()}
+function resetApp(){if(confirm("Reset all local finance data?")){db=structuredClone(seed);persist();applyTheme();render()}}
+function save(){persist();applyTheme();render();toast("Saved ✓")}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openTx()}});
+applyTheme();initAutoTheme();render();if(effectiveTheme()==="lakshmi")requestLakshmiPet(true);
+</script>
+</body>
+</html>
